@@ -1,0 +1,20 @@
+{
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "d2statmap",
+  "version": "0.0.1",
+  "description": "A tool to visualize a destiny 2 players owned armor stats as a heatmap",
+  "main": "server.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NSkelin/d2statmap.git"
+  },
+  "author": "Nicholas Skelin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NSkelin/d2statmap/issues"
+  },
+  "homepage": "https://github.com/NSkelin/d2statmap#readme"
+}
