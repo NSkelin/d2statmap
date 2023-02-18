@@ -10,7 +10,7 @@ button:hover {
     color: black;
 }
 
-#buttons {
+#armorTypeFilter, #classFilter, #userSearch {
     padding-bottom: 20px;
 }
 
