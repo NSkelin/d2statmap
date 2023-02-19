@@ -50,6 +50,7 @@ async function updateUI() {
     const data = await getArmor();
     // sort data from highest to lowest
     const statGroups = [[],[],[],[],[],[]];
+    let armorCount = 0;
     for (armor of data) {
         if (characterClass[armor.class] != selectedClass) continue;
         if (armorTypes[armor.armor_type] != selectedArmorType && selectedArmorType != "all") continue;
@@ -58,6 +59,7 @@ async function updateUI() {
                 statGroups[i].push(stat * pixelsPerStat);
             }
         }
+        armorCount++;
     }
 
     for (let [i, statGroup] of statGroups.entries()) {
@@ -76,7 +78,7 @@ async function updateUI() {
         document.getElementById(attributes[i]+"Bar").style.backgroundImage = createHeatMap(statGroup);
 
         // update armor count
-        document.getElementById(attributes[i]+"Count").innerHTML = data.length;
+        document.getElementById(attributes[i]+"Count").innerHTML = statGroups[0].length;
     }
 }
 
