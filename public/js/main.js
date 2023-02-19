@@ -1,5 +1,3 @@
-const data = [2,10,13,17,2,2,7,5,12];
-const attributes = ["mobility", "resilience", "Recovery", "Discipline", "Intellect", "Strength"]
 const gradients = [[165, 207, 255, 0.8],[255, 249, 165, 0.8],[255, 251, 30, 0.8],[255, 145, 0, 0.8],[255, 0, 0, 0.8],];
 const pixelsPerStat = 5; // how many pixels each stat point is represented by on the stat bar
 let heatBarSmoothing = false;
@@ -27,27 +25,41 @@ function createHeatMap(pixels) {
     return heatMapGradientCSS;
 }
 
-function updateUI() {
+async function getArmor() {
+    const res = await fetch("/armor", {method: "GET"})
+    const data = await res.json();
+    return data;
+}
+
+async function updateUI() {
+    const data = await getArmor();
     // sort data from highest to lowest
-    data.sort((a, b) => b - a);
-
-    // convert stats to pixels
-    const pixels = data.reduce((newArray, currentValue) => {
-        if (currentValue > minStat && currentValue <= maxStat) {
-            newArray.push(currentValue * pixelsPerStat);
+    const statGroups = [[],[],[],[],[],[]];
+    for (armor of data) {
+        for (const [i, stat] of armor.stats.entries()) {
+            if (stat > minStat && stat <= maxStat) {
+                statGroups[i].push(stat * pixelsPerStat);
+            }
         }
-        return newArray;
-    }, []);
+    }
 
-    console.log(pixels);
+    for (let [i, statGroup] of statGroups.entries()) {
+        statGroup.sort((a, b) => b - a);
 
-    // update UI
-    for (const attribute of attributes) {
+        const attributes = Object.freeze({
+            0: "mobility",
+            1: "resilience",
+            2: "recovery",
+            3: "discipline",
+            4: "intellect",
+            5: "strength",
+        });
+
         // update stat bars
-        document.getElementById(attribute+"Bar").style.backgroundImage = createHeatMap(pixels);
+        document.getElementById(attributes[i]+"Bar").style.backgroundImage = createHeatMap(statGroup);
 
         // update armor count
-        document.getElementById(attribute+"Count").innerHTML = data.length;
+        document.getElementById(attributes[i]+"Count").innerHTML = data.length;
     }
 }
 
@@ -67,6 +79,6 @@ document.getElementById("statSliderMin").addEventListener("input", () => updateS
 document.getElementById("statSliderMax").addEventListener("input", () => updateStatMinMax());
 
 const run = () => {
-    updateUI()
+    updateUI();
 }
 run();
