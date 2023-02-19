@@ -3,6 +3,13 @@ const pixelsPerStat = 5; // how many pixels each stat point is represented by on
 let heatBarSmoothing = false;
 let minStat = 2;
 let maxStat = 40;
+let selectedClass = "titan";
+const characterClass = Object.freeze({
+    0: "titan",
+    1: "hunter",
+    2: "warlock",
+    3: "unknown",
+});
 
 function createHeatMapSection(rgbCode, pixelLength) {
     let gradientSection = "";
@@ -36,6 +43,7 @@ async function updateUI() {
     // sort data from highest to lowest
     const statGroups = [[],[],[],[],[],[]];
     for (armor of data) {
+        if (characterClass[armor.class] != selectedClass) continue;
         for (const [i, stat] of armor.stats.entries()) {
             if (stat > minStat && stat <= maxStat) {
                 statGroups[i].push(stat * pixelsPerStat);
@@ -74,9 +82,17 @@ function updateStatMinMax() {
     updateUI();
 }
 
+function updateSelectedClass(newClass) {
+    selectedClass = newClass;
+    updateUI();
+}
+
 document.getElementById("heatBarSmoothing").addEventListener("click", () => toggleHeatBarSmoothing());
 document.getElementById("statSliderMin").addEventListener("input", () => updateStatMinMax());
 document.getElementById("statSliderMax").addEventListener("input", () => updateStatMinMax());
+document.getElementById("hunter").addEventListener("click", () => updateSelectedClass("hunter"));
+document.getElementById("titan").addEventListener("click", () => updateSelectedClass("titan"));
+document.getElementById("warlock").addEventListener("click", () => updateSelectedClass("warlock"));
 
 const run = () => {
     updateUI();
