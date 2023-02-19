@@ -4,11 +4,19 @@ let heatBarSmoothing = false;
 let minStat = 2;
 let maxStat = 40;
 let selectedClass = "titan";
+let selectedArmorType = "all";
 const characterClass = Object.freeze({
     0: "titan",
     1: "hunter",
     2: "warlock",
     3: "unknown",
+});
+const armorTypes = Object.freeze({
+    0: "helm",
+    1: "arms",
+    2: "chest",
+    3: "legs",
+    4: "classItem",
 });
 
 function createHeatMapSection(rgbCode, pixelLength) {
@@ -44,6 +52,7 @@ async function updateUI() {
     const statGroups = [[],[],[],[],[],[]];
     for (armor of data) {
         if (characterClass[armor.class] != selectedClass) continue;
+        if (armorTypes[armor.armor_type] != selectedArmorType && selectedArmorType != "all") continue;
         for (const [i, stat] of armor.stats.entries()) {
             if (stat > minStat && stat <= maxStat) {
                 statGroups[i].push(stat * pixelsPerStat);
@@ -87,12 +96,22 @@ function updateSelectedClass(newClass) {
     updateUI();
 }
 
+function updateSelectedArmorType(armorType) {
+    selectedArmorType = armorType;
+    updateUI();
+}
+
 document.getElementById("heatBarSmoothing").addEventListener("click", () => toggleHeatBarSmoothing());
 document.getElementById("statSliderMin").addEventListener("input", () => updateStatMinMax());
 document.getElementById("statSliderMax").addEventListener("input", () => updateStatMinMax());
 document.getElementById("hunter").addEventListener("click", () => updateSelectedClass("hunter"));
 document.getElementById("titan").addEventListener("click", () => updateSelectedClass("titan"));
 document.getElementById("warlock").addEventListener("click", () => updateSelectedClass("warlock"));
+document.getElementById("allArmor").addEventListener("click", () => updateSelectedArmorType("all"));
+document.getElementById("helmet").addEventListener("click", () => updateSelectedArmorType("helm"));
+document.getElementById("arms").addEventListener("click", () => updateSelectedArmorType("arms"));
+document.getElementById("chest").addEventListener("click", () => updateSelectedArmorType("chest"));
+document.getElementById("legs").addEventListener("click", () => updateSelectedArmorType("legs"));
 
 const run = () => {
     updateUI();
