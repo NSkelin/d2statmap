@@ -1,2 +1,6 @@
+# required
 CLIENT_ID=
 PORT=
+
+# dev only parameters - optional
+DEV_HTTPS_PORT=
