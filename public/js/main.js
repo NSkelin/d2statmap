@@ -84,7 +84,7 @@ async function updateUI() {
 		document.getElementById(attributes[i] + "Bar").style.backgroundImage = createHeatMap(statGroup);
 
 		// update armor count
-		document.getElementById(attributes[i] + "Count").innerHTML = statGroups[0].length;
+		document.getElementById(attributes[i] + "Count").innerHTML = armorCount;
 	}
 }
 
