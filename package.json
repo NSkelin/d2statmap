@@ -1,37 +1,40 @@
 {
-  "scripts": {
-    "start": "node server.js",
-    "dev": "run-p dev:nodemon dev:open",
-    "dev:nodemon": "nodemon server.js",
-    "dev:open": "open-cli localhost:3000 -- firefox",
-    "dev:https": "run-p dev:httpsserver dev:openhttps",
-    "dev:httpsserver": "node devFiles/startHTTPSServer.js",
-    "dev:openhttps": "open-cli https:localhost -- firefox"
-  },
-  "name": "d2statmap",
-  "version": "0.0.1",
-  "description": "A tool to visualize a destiny 2 players owned armor stats as a heatmap",
-  "main": "server.js",
-  "devDependencies": {
-    "eslint": "^8.34.0",
-    "mkcert": "^1.5.1",
-    "nodemon": "^2.0.20",
-    "npm-run-all": "^4.1.5",
-    "open-cli": "^7.1.0",
-    "prettier": "^2.8.4"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/NSkelin/d2statmap.git"
-  },
-  "author": "Nicholas Skelin",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/NSkelin/d2statmap/issues"
-  },
-  "homepage": "https://github.com/NSkelin/d2statmap#readme",
-  "dependencies": {
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2"
-  }
+	"scripts": {
+		"start": "node server.js",
+		"dev": "run-p dev:nodemon dev:open",
+		"dev:nodemon": "nodemon server.js",
+		"dev:open": "open-cli localhost:3000 -- firefox",
+		"dev:https": "run-p dev:httpsserver dev:openhttps",
+		"dev:httpsserver": "node devFiles/startHTTPSServer.js",
+		"dev:openhttps": "open-cli https:localhost -- firefox"
+	},
+	"name": "d2statmap",
+	"version": "0.0.1",
+	"description": "A tool to visualize a destiny 2 players owned armor stats as a heatmap",
+	"main": "server.js",
+	"devDependencies": {
+		"eslint": "^8.34.0",
+		"mkcert": "^1.5.1",
+		"nodemon": "^2.0.20",
+		"npm-run-all": "^4.1.5",
+		"open-cli": "^7.1.0",
+		"prettier": "^2.8.4"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/NSkelin/d2statmap.git"
+	},
+	"author": "Nicholas Skelin",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/NSkelin/d2statmap/issues"
+	},
+	"homepage": "https://github.com/NSkelin/d2statmap#readme",
+	"dependencies": {
+		"cookie-parser": "^1.4.6",
+		"dotenv": "^16.0.3",
+		"express": "^4.18.2",
+		"jsonwebtoken": "^9.0.0",
+		"nanoid": "^3.3.4"
+	}
 }
