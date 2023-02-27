@@ -12,6 +12,7 @@
 	"version": "0.0.1",
 	"description": "A tool to visualize a destiny 2 players owned armor stats as a heatmap",
 	"main": "server.js",
+	"private": true,
 	"devDependencies": {
 		"eslint": "^8.34.0",
 		"mkcert": "^1.5.1",
