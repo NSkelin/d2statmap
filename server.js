@@ -1,18 +1,36 @@
-require("dotenv").config();
-const {nanoid} = require("nanoid");
-const cookieParser = require("cookie-parser");
-const jwt = require("jsonwebtoken");
-const express = require("express");
+import * as dotenv from "dotenv";
+dotenv.config();
+
+// create __dirname
+import path from "path";
+import {fileURLToPath} from "url";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// express
+import express from "express";
 const app = express();
+
+// cookies
+import jwt from "jsonwebtoken";
+import {nanoid} from "nanoid";
+import cookieParser from "cookie-parser";
+
+import dummyArmorData from "./dummyData.json" assert {type: "json"};
+
+// middleware
 app.use(express.static("public"));
 app.use(cookieParser());
+app.use((req, res, next) => {
+	res.set({"Access-Control-Allow-Origin": "http://localhost:5173"});
+	next();
+});
 
 function getArmor() {
-	return require("./dummyData");
+	return dummyArmorData;
 }
 
 app.get("/", (req, res) => {
-    res.sendFile("index.html", {root: __dirname});
+	res.sendFile("index.html", {root: __dirname});
 });
 
 app.get("/armor", (req, res) => {
@@ -44,5 +62,5 @@ app.get("/authorized", (req, res) => {
 });
 
 app.listen(process.env.PORT, () => {
-    console.log(`Server is listening on port ${process.env.PORT}`);
+	console.log(`Server is listening on port ${process.env.PORT}`);
 });
