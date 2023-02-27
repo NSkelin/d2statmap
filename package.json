@@ -1,12 +1,11 @@
 {
 	"scripts": {
-		"start": "node server.js",
-		"dev": "run-p dev:nodemon dev:open",
-		"dev:nodemon": "nodemon server.js",
-		"dev:open": "open-cli localhost:3000 -- firefox",
-		"dev:https": "run-p dev:httpsserver dev:openhttps",
-		"dev:httpsserver": "node devFiles/startHTTPSServer.js",
-		"dev:openhttps": "open-cli https:localhost -- firefox"
+		"dev": "server",
+		"build": "vite build",
+		"preview": "vite preview",
+		"vite": "vite",
+		"server": "nodemon server.js",
+		"server:https": "nodemon devFiles/startHTTPSServer.js"
 	},
 	"name": "d2statmap",
 	"version": "0.0.1",
