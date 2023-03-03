@@ -2,10 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import styles from "./styles/title.module.css";
 
-function Title({children}) {
+function Title({title, children}) {
 	return (
 		<>
-			<h2>HeatMap</h2>
+			<h2>{title}</h2>
 			<div>
 				<div className={styles.line}></div>
 				{children}
@@ -15,6 +15,7 @@ function Title({children}) {
 }
 
 Title.propTypes = {
+	title: PropTypes.string,
 	children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.element), PropTypes.element]),
 };
 
