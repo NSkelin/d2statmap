@@ -8,7 +8,7 @@ function Title({title, children}) {
 			<h2>{title}</h2>
 			<div>
 				<div className={styles.line}></div>
-				{children}
+				<div className={styles.body}>{children}</div>
 			</div>
 		</div>
 	);

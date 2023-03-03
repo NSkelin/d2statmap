@@ -4,3 +4,8 @@
     background: linear-gradient(to right, #FFFFFF, #ffffff00);
     margin: 5px 0px;
 }
+.body {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
