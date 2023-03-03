@@ -23,6 +23,7 @@ Menu.propTypes = {
 	title: PropTypes.string,
 	titleBG: PropTypes.string,
 	bodyBG: PropTypes.string,
+	children: PropTypes.element,
 };
 
 export default Menu;
