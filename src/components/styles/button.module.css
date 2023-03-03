@@ -1,0 +1,23 @@
+.button {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #525252;
+    padding: 10px;
+    border: solid 1px #848484;
+}
+.button:hover {
+    background-color: #747474;
+    border: solid 1px #B8B8B8;
+}
+.armorCount {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 10px;
+}
+.icon{
+    fill: #A4A4A4;
+    width: 20px;
+    height: 20px;
+}
