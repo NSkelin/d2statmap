@@ -23,7 +23,7 @@ Menu.propTypes = {
 	title: PropTypes.string,
 	titleBG: PropTypes.string,
 	bodyBG: PropTypes.string,
-	children: PropTypes.element,
+	children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.element), PropTypes.element]),
 };
 
 export default Menu;
