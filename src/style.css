@@ -1,60 +1,14 @@
 body {
     margin: 0;
     background: radial-gradient(50% 50% at 50% 50%, #40435F 0%, #2C2940 100%);
-}
-button {
-    background-color: gray;
-    padding: 10px 30px;
     color: white;
-    border: none;
 }
-
-button:hover {
-    background-color: lightgray;
-    color: black;
+h1,h2 {
+    margin: 0;
 }
-
-#armorTypeFilter, #classFilter, #userSearch {
-    padding-bottom: 20px;
+h1 {
+    font-size: 24px;
 }
-
-.attribute_name, .stat_bar, .armor_count {
-    height: 20px;
-    margin: 5px 0;
-}
-
-#attributes {
-    display: flex;
-    flex-direction: row;
-}
-
-#stat_bars {
-    margin: 0px 10px;
-}
-
-.stat_bar  {
-    background-color:gray;
-    width: 200px;
-}
-
-.attribute_name, .armor_count {
-    display: flex;
-    align-items: center;
-    justify-content: end;
-}
-
-#options {
-    display: flex;
-    flex-direction: column;
-    width: 200px;
-}
-
-#mobility {
-    background-image: linear-gradient(to right,
-    rgba(165, 207, 255, 0.8),
-    rgba(255, 249, 165, 0.8),
-    rgba(255, 251, 30, 0.8),
-    rgba(255, 145, 0, 0.8),
-    rgba(255, 0, 0, 0.8),
-    );
+h2 {
+    font-size: 16px;
 }
