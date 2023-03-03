@@ -4,13 +4,13 @@ import styles from "./styles/title.module.css";
 
 function Title({title, children}) {
 	return (
-		<>
+		<div>
 			<h2>{title}</h2>
 			<div>
 				<div className={styles.line}></div>
 				{children}
 			</div>
-		</>
+		</div>
 	);
 }
 
