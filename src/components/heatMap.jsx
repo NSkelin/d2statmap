@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./styles/heatMap.module.css";
+import NoUiSlider from "./noUiSlider.jsx";
 import {ReactComponent as MobilityIcon} from "../assets/mobility.svg";
 import {ReactComponent as ResilienceIcon} from "../assets/resilience.svg";
 import {ReactComponent as RecoveryIcon} from "../assets/recovery.svg";
@@ -35,6 +36,7 @@ function HeatMap() {
 				<div className={styles.statBar}></div>
 				<div className={styles.statBar}></div>
 				<div className={styles.statBar}></div>
+				<NoUiSlider min={2} max={40}></NoUiSlider>
 			</div>
 		</div>
 	);
