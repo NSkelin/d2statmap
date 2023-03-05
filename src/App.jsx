@@ -4,6 +4,7 @@ import Menu from "./components/menu.jsx";
 import Title from "./components/title.jsx";
 import HeatMap from "./components/heatMap.jsx";
 import Button from "./components/button.jsx";
+import CheckBox from "./components/checkBox.jsx";
 import "./style.css";
 import styles from "./app.module.css";
 import {ReactComponent as HelmetIcon} from "./assets/helmet.svg";
@@ -35,7 +36,11 @@ function App() {
 							<HeatMap></HeatMap>
 						</Title>
 					</Menu>
-					<Menu title="Options" titleBG="#232323" bodyBG="#323232"></Menu>
+					<Menu title="Options" titleBG="#232323" bodyBG="#323232">
+						<CheckBox title={"Assume masterwork"}></CheckBox>
+						<CheckBox title={"Simple armor selection"}></CheckBox>
+						<CheckBox title={"Heatbar smoothing"}></CheckBox>
+					</Menu>
 				</div>
 			</div>
 		</div>
