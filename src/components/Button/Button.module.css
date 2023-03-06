@@ -1,18 +1,24 @@
-.button {
+.button, .selectedButton {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background-color: #525252;
     padding: 10px;
-    border: solid 1px #848484;
     color: white;
 }
-.button:hover {
+.button {
+    background-color: #525252;
+    border: solid 1px #848484;
+}
+.selectedButton {
+    background-color: #747474;
+    border: solid 1px #B8B8B8;
+}
+.button:hover, .selectedButton:hover {
     background-color: #747474;
     border: solid 1px #B8B8B8;
     cursor: pointer;
 }
-.button:active {
+.button:active, .selectedButton:active {
     background-color: #666666;
     border: solid 1px #B8B8B8;
     cursor: pointer;

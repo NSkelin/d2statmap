@@ -1,6 +1,6 @@
 import React from "react";
-import styles from "./styles/navBar.module.css";
-import {ReactComponent as NavIcon} from "../assets/patrol.svg";
+import styles from "./NavBar.module.css";
+import {ReactComponent as NavIcon} from "../../assets/patrol.svg";
 
 function NavBar() {
 	return (

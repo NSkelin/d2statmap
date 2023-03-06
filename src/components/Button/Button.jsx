@@ -1,12 +1,20 @@
-import React from "react";
+import React, {useState} from "react";
 import PropTypes from "prop-types";
-import styles from "./styles/button.module.css";
+import styles from "./Button.module.css";
 
 function Button({text, Icon, count, stretch, onClick}) {
 	const flexVal = stretch ? 1 : 0;
+	const [toggle, setToggle] = useState(false);
+
+	const style = toggle ? styles.selectedButton : styles.button;
+
+	function handleClick() {
+		setToggle(toggle ? false : true);
+		onClick();
+	}
 
 	return (
-		<button onClick={onClick} className={styles.button} style={{flex: flexVal}}>
+		<button onClick={handleClick} className={style} style={{flex: flexVal}}>
 			{text}
 			<div className={styles.armorCount}>
 				<Icon className={styles.icon}></Icon>

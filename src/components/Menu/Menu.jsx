@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styles from "./styles/menu.module.css";
+import styles from "./Menu.module.css";
 
 function Menu({title, titleBG, bodyBG, children}) {
 	return (

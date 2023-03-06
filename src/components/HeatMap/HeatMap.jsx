@@ -1,12 +1,12 @@
 import React from "react";
-import styles from "./styles/heatMap.module.css";
-import NoUiSlider from "./noUiSlider.jsx";
-import {ReactComponent as MobilityIcon} from "../assets/mobility.svg";
-import {ReactComponent as ResilienceIcon} from "../assets/resilience.svg";
-import {ReactComponent as RecoveryIcon} from "../assets/recovery.svg";
-import {ReactComponent as DisciplineIcon} from "../assets/discipline.svg";
-import {ReactComponent as IntellectIcon} from "../assets/intellect.svg";
-import {ReactComponent as StrengthIcon} from "../assets/strength.svg";
+import styles from "./HeatMap.module.css";
+import NoUiSlider from "../noUiSlider";
+import {ReactComponent as MobilityIcon} from "../../assets/mobility.svg";
+import {ReactComponent as ResilienceIcon} from "../../assets/resilience.svg";
+import {ReactComponent as RecoveryIcon} from "../../assets/recovery.svg";
+import {ReactComponent as DisciplineIcon} from "../../assets/discipline.svg";
+import {ReactComponent as IntellectIcon} from "../../assets/intellect.svg";
+import {ReactComponent as StrengthIcon} from "../../assets/strength.svg";
 
 function HeatMap() {
 	return (

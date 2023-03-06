@@ -1,7 +1,7 @@
 import React, {useRef, useEffect} from "react";
 import PropTypes from "prop-types";
 import "nouislider/dist/nouislider.css";
-import "./styles/noUiSlider.css";
+import "./NoUiSlider.css";
 import noUiSlider from "nouislider";
 
 function NoUiSlider({min, max}) {

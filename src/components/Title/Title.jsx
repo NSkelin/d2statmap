@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styles from "./styles/title.module.css";
+import styles from "./Title.module.css";
 
 function Title({title, children}) {
 	return (
