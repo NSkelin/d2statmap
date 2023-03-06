@@ -5,10 +5,17 @@
     background-color: #525252;
     padding: 10px;
     border: solid 1px #848484;
+    color: white;
 }
 .button:hover {
     background-color: #747474;
     border: solid 1px #B8B8B8;
+    cursor: pointer;
+}
+.button:active {
+    background-color: #666666;
+    border: solid 1px #B8B8B8;
+    cursor: pointer;
 }
 .armorCount {
     display: flex;
