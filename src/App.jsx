@@ -1,10 +1,5 @@
 import React from "react";
-import NavBar from "./components/NavBar";
-import Menu from "./components/Menu";
-import Title from "./components/Title";
-import HeatMap from "./components/HeatMap";
-import Button from "./components/Button";
-import CheckBox from "./components/CheckBox";
+import {NavBar, Menu, Title, HeatMap, Button, CheckBox, SelectOneButton} from "./components";
 import "./style.css";
 import styles from "./app.module.css";
 import {ReactComponent as HelmetIcon} from "./assets/helmet.svg";
