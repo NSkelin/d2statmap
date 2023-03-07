@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./HeatMap.module.css";
-import NoUiSlider from "../noUiSlider";
+import NoUiSlider from "../NoUiSlider";
 import {ReactComponent as MobilityIcon} from "../../assets/mobility.svg";
 import {ReactComponent as ResilienceIcon} from "../../assets/resilience.svg";
 import {ReactComponent as RecoveryIcon} from "../../assets/recovery.svg";
