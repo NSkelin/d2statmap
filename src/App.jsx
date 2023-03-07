@@ -16,9 +16,13 @@ function App() {
 				<div className={styles.center}>
 					<Menu title="Stat map" titleBG="#282828" bodyBG="#383838">
 						<Title title="Class selection">
-							<Button stretch={true} text="Hunter" Icon={HelmetIcon} count={10}></Button>
-							<Button stretch={true} text="Warlock" Icon={HelmetIcon} count={147}></Button>
-							<Button stretch={true} text="Titan" Icon={HelmetIcon} count={26}></Button>
+							<SelectOneButton
+								buttons={[
+									{id: 1, stretch: true, text: "Hunter", icon: HelmetIcon, count: 10},
+									{id: 2, stretch: true, text: "Warlock", icon: HelmetIcon, count: 147},
+									{id: 3, stretch: true, text: "Titan", icon: HelmetIcon, count: 26},
+								]}
+							></SelectOneButton>
 						</Title>
 						<Title title="Armor selection">
 							<Button Icon={HelmetIcon} count={10}></Button>
