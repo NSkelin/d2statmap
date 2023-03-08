@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {NavBar, Menu, Title, HeatMap, Button, CheckBox, SelectOneButton} from "./components";
 import "./style.css";
 import styles from "./app.module.css";
@@ -9,6 +9,11 @@ import {ReactComponent as BootsIcon} from "./assets/boots.svg";
 import {ReactComponent as ClassIcon} from "./assets/helmet.svg";
 
 function App() {
+	const [selectedClass, setSelectedClass] = useState(null);
+	function handleSelect(buttonText) {
+		setSelectedClass(buttonText);
+	}
+
 	return (
 		<div className={styles.app}>
 			<NavBar></NavBar>
@@ -17,10 +22,12 @@ function App() {
 					<Menu title="Stat map" titleBG="#282828" bodyBG="#383838">
 						<Title title="Class selection">
 							<SelectOneButton
+								onSelect={handleSelect}
+								selectedButtonText={selectedClass}
 								buttons={[
-									{id: 1, stretch: true, text: "Hunter", icon: HelmetIcon, count: 10},
-									{id: 2, stretch: true, text: "Warlock", icon: HelmetIcon, count: 147},
-									{id: 3, stretch: true, text: "Titan", icon: HelmetIcon, count: 26},
+									{stretch: true, text: "Hunter", icon: HelmetIcon, count: 10},
+									{stretch: true, text: "Warlock", icon: HelmetIcon, count: 147},
+									{stretch: true, text: "Titan", icon: HelmetIcon, count: 26},
 								]}
 							></SelectOneButton>
 						</Title>
