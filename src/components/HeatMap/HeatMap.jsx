@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import styles from "./HeatMap.module.css";
 import NoUiSlider from "../NoUiSlider";
 import {ReactComponent as MobilityIcon} from "../../assets/mobility.svg";
@@ -8,7 +9,7 @@ import {ReactComponent as DisciplineIcon} from "../../assets/discipline.svg";
 import {ReactComponent as IntellectIcon} from "../../assets/intellect.svg";
 import {ReactComponent as StrengthIcon} from "../../assets/strength.svg";
 
-function HeatMap() {
+function HeatMap({slider}) {
 	return (
 		<div className={styles.statDisplay}>
 			<div className={styles.statIdentifiers}>
@@ -36,10 +37,31 @@ function HeatMap() {
 				<div className={styles.statBar}></div>
 				<div className={styles.statBar}></div>
 				<div className={styles.statBar}></div>
-				<NoUiSlider min={2} max={40}></NoUiSlider>
+				<NoUiSlider
+					minRange={slider.minRange}
+					maxRange={slider.maxRange}
+					minVal={slider.minVal}
+					maxVal={slider.maxVal}
+					onChange={slider.onChange}
+				></NoUiSlider>
 			</div>
 		</div>
 	);
 }
+
+HeatMap.defaultProps = {
+	minRange: 0,
+	maxRaminRange: 100,
+};
+
+HeatMap.propTypes = {
+	slider: PropTypes.shape({
+		minRange: PropTypes.number,
+		maxRange: PropTypes.number,
+		minVal: PropTypes.number,
+		maxVal: PropTypes.number,
+		onChange: PropTypes.func,
+	}),
+};
 
 export default HeatMap;
