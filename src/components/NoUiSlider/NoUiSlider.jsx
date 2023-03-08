@@ -4,12 +4,12 @@ import "nouislider/dist/nouislider.css";
 import "./NoUiSlider.css";
 import noUiSlider from "nouislider";
 
-function NoUiSlider({minRange, maxRange, minVal, maxVal}) {
+function NoUiSlider({minRange, maxRange, minVal, maxVal, onChange}) {
 	const divRef = useRef(null);
 
 	useEffect(() => {
-		noUiSlider.create(divRef.current, {
-			start: [minRange, maxRange],
+		const slider = noUiSlider.create(divRef.current, {
+			start: [minVal, maxVal],
 			connect: true,
 			step: 1,
 			range: {
@@ -17,6 +17,7 @@ function NoUiSlider({minRange, maxRange, minVal, maxVal}) {
 				max: maxRange,
 			},
 		});
+		slider.on("update", onChange);
 		return () => {
 			divRef.current.noUiSlider.destroy();
 		};
@@ -41,6 +42,7 @@ NoUiSlider.propTypes = {
 	maxRange: PropTypes.number,
 	minVal: PropTypes.number,
 	maxVal: PropTypes.number,
+	onChange: PropTypes.func,
 };
 
 export default NoUiSlider;
