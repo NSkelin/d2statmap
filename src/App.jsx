@@ -10,8 +10,30 @@ import {ReactComponent as ClassIcon} from "./assets/helmet.svg";
 
 function App() {
 	const [selectedClass, setSelectedClass] = useState(null);
-	function handleSelect(buttonText) {
+	const [helmetSelected, setHelmetSelected] = useState(null);
+	const [glovesSelected, setGlovesSelected] = useState(null);
+	const [chestSelected, setChestSelected] = useState(null);
+	const [bootsSelected, setBootsSelected] = useState(null);
+	const [classItemSelected, setClassItemSelected] = useState(null);
+
+	function handleClassSelect(buttonText) {
 		setSelectedClass(buttonText);
+	}
+
+	function handleHelmetSelect() {
+		setHelmetSelected(helmetSelected ? false : true);
+	}
+	function handleGlovesSelect() {
+		setGlovesSelected(glovesSelected ? false : true);
+	}
+	function handleChestSelect() {
+		setChestSelected(chestSelected ? false : true);
+	}
+	function handleBootsSelect() {
+		setBootsSelected(bootsSelected ? false : true);
+	}
+	function handleClassItemSelect() {
+		setClassItemSelected(classItemSelected ? false : true);
 	}
 
 	return (
@@ -22,7 +44,7 @@ function App() {
 					<Menu title="Stat map" titleBG="#282828" bodyBG="#383838">
 						<Title title="Class selection">
 							<SelectOneButton
-								onSelect={handleSelect}
+								onSelect={handleClassSelect}
 								selectedButtonText={selectedClass}
 								buttons={[
 									{stretch: true, text: "Hunter", icon: HelmetIcon, count: 10},
@@ -32,11 +54,46 @@ function App() {
 							></SelectOneButton>
 						</Title>
 						<Title title="Armor selection">
-							<Button Icon={HelmetIcon} count={10}></Button>
-							<Button Icon={GlovesIcon} count={47}></Button>
-							<Button Icon={ChestIcon} count={26}></Button>
-							<Button Icon={BootsIcon} count={14}></Button>
-							<Button Icon={ClassIcon} count={36}></Button>
+							<Button
+								onClick={handleHelmetSelect}
+								selected={helmetSelected}
+								text="Helmet"
+								showText={false}
+								Icon={HelmetIcon}
+								count={10}
+							></Button>
+							<Button
+								onClick={handleGlovesSelect}
+								selected={glovesSelected}
+								text="Gloves"
+								showText={false}
+								Icon={GlovesIcon}
+								count={47}
+							></Button>
+							<Button
+								onClick={handleChestSelect}
+								selected={chestSelected}
+								text="Chest"
+								showText={false}
+								Icon={ChestIcon}
+								count={26}
+							></Button>
+							<Button
+								onClick={handleBootsSelect}
+								selected={bootsSelected}
+								text="Boots"
+								showText={false}
+								Icon={BootsIcon}
+								count={14}
+							></Button>
+							<Button
+								onClick={handleClassItemSelect}
+								selected={classItemSelected}
+								text="ClassItem"
+								showText={false}
+								Icon={ClassIcon}
+								count={36}
+							></Button>
 						</Title>
 						<Title title="HeatMap">
 							<HeatMap></HeatMap>
