@@ -25,13 +25,14 @@ SelectOneButton.defaultProps = {};
 SelectOneButton.propTypes = {
 	buttons: PropTypes.arrayOf(
 		PropTypes.shape({
-			id: PropTypes.number,
 			stretch: PropTypes.bool,
 			text: PropTypes.string,
 			icon: PropTypes.elementType,
 			count: PropTypes.number,
 		})
 	),
+	onSelect: PropTypes.func,
+	selectedButtonText: PropTypes.string,
 };
 
 export default SelectOneButton;
