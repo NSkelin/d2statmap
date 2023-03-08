@@ -2,25 +2,18 @@ import React, {useState} from "react";
 import PropTypes from "prop-types";
 import Button from "../button";
 
-function SelectOneButton({buttons}) {
-	const [selectedIndex, setSelectedIndex] = useState(null);
-
-	function handleClick(id) {
-		setSelectedIndex(id);
-	}
-
+function SelectOneButton({buttons, onSelect, selectedButtonText}) {
 	return (
 		<>
-			{buttons.map((button) => (
+			{buttons.map((button, index) => (
 				<Button
-					key={button.id}
+					key={index}
 					stretch={button.stretch}
 					text={button.text}
 					Icon={button.icon}
 					count={button.count}
-					onClick={() => handleClick(button.id)}
-					id={"SelectOneButton" + button.id}
-					selected={selectedIndex === button.id}
+					onClick={() => onSelect(button.text)}
+					selected={selectedButtonText === button.text}
 				></Button>
 			))}
 		</>
