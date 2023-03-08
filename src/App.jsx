@@ -15,6 +15,7 @@ function App() {
 	const [chestSelected, setChestSelected] = useState(null);
 	const [bootsSelected, setBootsSelected] = useState(null);
 	const [classItemSelected, setClassItemSelected] = useState(null);
+	const [sliderValues, setSliderValues] = useState({min: 2, max: 40});
 
 	function handleClassSelect(buttonText) {
 		setSelectedClass(buttonText);
@@ -34,6 +35,10 @@ function App() {
 	}
 	function handleClassItemSelect() {
 		setClassItemSelected(classItemSelected ? false : true);
+	}
+
+	function handleSliderChange(values) {
+		setSliderValues({min: Number(values[0]), max: Number(values[1])});
 	}
 
 	return (
@@ -96,7 +101,9 @@ function App() {
 							></Button>
 						</Title>
 						<Title title="HeatMap">
-							<HeatMap></HeatMap>
+							<HeatMap
+								slider={{minRange: 0, maxRange: 40, minVal: sliderValues.min, maxVal: sliderValues.max, onChange: handleSliderChange}}
+							></HeatMap>
 						</Title>
 					</Menu>
 					<Menu title="Options" titleBG="#232323" bodyBG="#323232">
