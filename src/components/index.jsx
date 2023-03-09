@@ -6,3 +6,4 @@ export {default as NavBar} from "./NavBar";
 export {default as NoUiSlider} from "./NoUiSlider";
 export {default as Title} from "./Title";
 export {default as SelectOneButton} from "./SelectOneButton";
+export {default as StatMap} from "./StatMap";
