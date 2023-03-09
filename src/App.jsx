@@ -16,6 +16,7 @@ function App() {
 	const [bootsSelected, setBootsSelected] = useState(null);
 	const [classItemSelected, setClassItemSelected] = useState(null);
 	const [sliderValues, setSliderValues] = useState({min: 2, max: 40});
+	const [options, setOptions] = useState({assumeMasterwork: false, simpleArmor: false, smoothing: false});
 
 	function handleClassSelect(buttonText) {
 		setSelectedClass(buttonText);
@@ -39,6 +40,16 @@ function App() {
 
 	function handleSliderChange(values) {
 		setSliderValues({min: Number(values[0]), max: Number(values[1])});
+	}
+
+	function handleOptionChange(e) {
+		let name = e.target.name;
+		let value = options[name] ? false : true;
+		setOptions({
+			...options,
+			[name]: value,
+		});
+		console.log(options);
 	}
 
 	return (
@@ -107,9 +118,9 @@ function App() {
 						</Title>
 					</Menu>
 					<Menu title="Options" titleBG="#232323" bodyBG="#323232">
-						<CheckBox title={"Assume masterwork"}></CheckBox>
-						<CheckBox title={"Simple armor selection"}></CheckBox>
-						<CheckBox title={"Heatbar smoothing"}></CheckBox>
+						<CheckBox onChange={handleOptionChange} name={"assumeMasterwork"} title={"Assume masterwork"}></CheckBox>
+						<CheckBox onChange={handleOptionChange} name={"simpleArmor"} title={"Simple armor selection"}></CheckBox>
+						<CheckBox onChange={handleOptionChange} name={"smoothing"} title={"Heatbar smoothing"}></CheckBox>
 					</Menu>
 				</div>
 			</div>
