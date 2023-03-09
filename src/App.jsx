@@ -10,11 +10,7 @@ import {ReactComponent as ClassIcon} from "./assets/helmet.svg";
 
 function App() {
 	const [selectedClass, setSelectedClass] = useState(null);
-	const [helmetSelected, setHelmetSelected] = useState(null);
-	const [glovesSelected, setGlovesSelected] = useState(null);
-	const [chestSelected, setChestSelected] = useState(null);
-	const [bootsSelected, setBootsSelected] = useState(null);
-	const [classItemSelected, setClassItemSelected] = useState(null);
+	const [selectedArmorTypes, setSelectedArmorTypes] = useState({helmet: false, gloves: false, chest: false, boots: false, classItem: false});
 	const [sliderValues, setSliderValues] = useState({min: 2, max: 40});
 	const [options, setOptions] = useState({assumeMasterwork: false, simpleArmor: false, smoothing: false});
 
@@ -22,20 +18,13 @@ function App() {
 		setSelectedClass(buttonText);
 	}
 
-	function handleHelmetSelect() {
-		setHelmetSelected(helmetSelected ? false : true);
-	}
-	function handleGlovesSelect() {
-		setGlovesSelected(glovesSelected ? false : true);
-	}
-	function handleChestSelect() {
-		setChestSelected(chestSelected ? false : true);
-	}
-	function handleBootsSelect() {
-		setBootsSelected(bootsSelected ? false : true);
-	}
-	function handleClassItemSelect() {
-		setClassItemSelected(classItemSelected ? false : true);
+	function handleArmorTypesSelection(e) {
+		let name = e.currentTarget.name;
+		let value = selectedArmorTypes[name] ? false : true;
+		setSelectedArmorTypes({
+			...selectedArmorTypes,
+			[name]: value,
+		});
 	}
 
 	function handleSliderChange(values) {
@@ -43,13 +32,12 @@ function App() {
 	}
 
 	function handleOptionChange(e) {
-		let name = e.target.name;
+		let name = e.currentTarget.name;
 		let value = options[name] ? false : true;
 		setOptions({
 			...options,
 			[name]: value,
 		});
-		console.log(options);
 	}
 
 	return (
@@ -71,40 +59,45 @@ function App() {
 						</Title>
 						<Title title="Armor selection">
 							<Button
-								onClick={handleHelmetSelect}
-								selected={helmetSelected}
+								name={"helmet"}
+								onClick={handleArmorTypesSelection}
+								selected={selectedArmorTypes.helmet}
 								text="Helmet"
 								showText={false}
 								Icon={HelmetIcon}
 								count={10}
 							></Button>
 							<Button
-								onClick={handleGlovesSelect}
-								selected={glovesSelected}
+								name={"gloves"}
+								onClick={handleArmorTypesSelection}
+								selected={selectedArmorTypes.gloves}
 								text="Gloves"
 								showText={false}
 								Icon={GlovesIcon}
 								count={47}
 							></Button>
 							<Button
-								onClick={handleChestSelect}
-								selected={chestSelected}
+								name={"chest"}
+								onClick={handleArmorTypesSelection}
+								selected={selectedArmorTypes.chest}
 								text="Chest"
 								showText={false}
 								Icon={ChestIcon}
 								count={26}
 							></Button>
 							<Button
-								onClick={handleBootsSelect}
-								selected={bootsSelected}
+								name={"boots"}
+								onClick={handleArmorTypesSelection}
+								selected={selectedArmorTypes.boots}
 								text="Boots"
 								showText={false}
 								Icon={BootsIcon}
 								count={14}
 							></Button>
 							<Button
-								onClick={handleClassItemSelect}
-								selected={classItemSelected}
+								name={"classItem"}
+								onClick={handleArmorTypesSelection}
+								selected={selectedArmorTypes.classItem}
 								text="ClassItem"
 								showText={false}
 								Icon={ClassIcon}
