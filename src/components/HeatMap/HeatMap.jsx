@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styles from "./HeatMap.module.css";
 import NoUiSlider from "../NoUiSlider";
+import StatBar from "../StatBar";
 import {ReactComponent as MobilityIcon} from "../../assets/mobility.svg";
 import {ReactComponent as ResilienceIcon} from "../../assets/resilience.svg";
 import {ReactComponent as RecoveryIcon} from "../../assets/recovery.svg";
@@ -9,7 +10,20 @@ import {ReactComponent as DisciplineIcon} from "../../assets/discipline.svg";
 import {ReactComponent as IntellectIcon} from "../../assets/intellect.svg";
 import {ReactComponent as StrengthIcon} from "../../assets/strength.svg";
 
-function HeatMap({slider}) {
+function getStats(armors, minStat, maxStat) {
+	let stats = [[], [], [], [], [], []];
+	for (let armor of armors) {
+		for (const [i, stat] of armor.stats.entries()) {
+			if (stat > minStat && stat <= maxStat) {
+				stats[i].push(stat);
+			}
+		}
+	}
+	return stats;
+}
+
+function HeatMap({slider, smoothing, sliderValues, armor}) {
+	const stats = getStats(armor, sliderValues.min, sliderValues.max);
 	return (
 		<div className={styles.statDisplay}>
 			<div className={styles.statIdentifiers}>
@@ -31,12 +45,13 @@ function HeatMap({slider}) {
 				</div>
 			</div>
 			<div className={styles.statBars}>
-				<div className={styles.statBar}></div>
-				<div className={styles.statBar}></div>
-				<div className={styles.statBar}></div>
-				<div className={styles.statBar}></div>
-				<div className={styles.statBar}></div>
-				<div className={styles.statBar}></div>
+				<StatBar values={stats[0]} pixelsPerStat={5} smoothing={smoothing}></StatBar>
+				<StatBar values={stats[1]} pixelsPerStat={5} smoothing={smoothing}></StatBar>
+				<StatBar values={stats[2]} pixelsPerStat={5} smoothing={smoothing}></StatBar>
+				<StatBar values={stats[3]} pixelsPerStat={5} smoothing={smoothing}></StatBar>
+				<StatBar values={stats[4]} pixelsPerStat={5} smoothing={smoothing}></StatBar>
+				<StatBar values={stats[5]} pixelsPerStat={5} smoothing={smoothing}></StatBar>
+
 				<NoUiSlider
 					minRange={slider.minRange}
 					maxRange={slider.maxRange}
@@ -61,6 +76,17 @@ HeatMap.propTypes = {
 		minVal: PropTypes.number,
 		maxVal: PropTypes.number,
 		onChange: PropTypes.func,
+	}),
+	smoothing: PropTypes.bool,
+	sliderValues: PropTypes.shapeOf({
+		min: PropTypes.number,
+		max: PropTypes.number,
+	}),
+	armor: PropTypes.shapeOf({
+		class: PropTypes.number,
+		masterwork: PropTypes.bool,
+		stats: PropTypes.arrayOf(PropTypes.number),
+		armor_type: PropTypes.number,
 	}),
 };
 
