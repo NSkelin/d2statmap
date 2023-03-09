@@ -155,12 +155,14 @@ function StatMap({armorData}) {
 }
 
 StatMap.propTypes = {
-	armorData: PropTypes.shapeOf({
-		class: PropTypes.number,
-		masterwork: PropTypes.bool,
-		stats: PropTypes.arrayOf(PropTypes.number),
-		armor_type: PropTypes.number,
-	}),
+	armorData: PropTypes.arrayOf(
+		PropTypes.shape({
+			class: PropTypes.number,
+			masterwork: PropTypes.bool,
+			stats: PropTypes.arrayOf(PropTypes.number),
+			armor_type: PropTypes.number,
+		})
+	),
 };
 
 export default StatMap;

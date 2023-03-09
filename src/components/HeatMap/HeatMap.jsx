@@ -78,16 +78,18 @@ HeatMap.propTypes = {
 		onChange: PropTypes.func,
 	}),
 	smoothing: PropTypes.bool,
-	sliderValues: PropTypes.shapeOf({
+	sliderValues: PropTypes.shape({
 		min: PropTypes.number,
 		max: PropTypes.number,
 	}),
-	armor: PropTypes.shapeOf({
-		class: PropTypes.number,
-		masterwork: PropTypes.bool,
-		stats: PropTypes.arrayOf(PropTypes.number),
-		armor_type: PropTypes.number,
-	}),
+	armor: PropTypes.arrayOf(
+		PropTypes.shape({
+			class: PropTypes.number,
+			masterwork: PropTypes.bool,
+			stats: PropTypes.arrayOf(PropTypes.number),
+			armor_type: PropTypes.number,
+		})
+	),
 };
 
 export default HeatMap;
