@@ -4,10 +4,12 @@ import styles from "./CheckBox.module.css";
 
 function CheckBox({title}) {
 	return (
-		<div className={styles.container}>
-			<input className={styles.checkBox} type="checkbox"></input>
-			{title}
-		</div>
+		<>
+			<label className={styles.container}>
+				<input className={styles.checkBox} type="checkbox"></input>
+				{title}
+			</label>
+		</>
 	);
 }
 
