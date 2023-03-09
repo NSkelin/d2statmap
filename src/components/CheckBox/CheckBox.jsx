@@ -2,11 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import styles from "./CheckBox.module.css";
 
-function CheckBox({title}) {
+function CheckBox({title, name, onChange}) {
 	return (
 		<>
 			<label className={styles.container}>
-				<input className={styles.checkBox} type="checkbox"></input>
+				<input name={name} onChange={onChange} className={styles.checkBox} type="checkbox"></input>
 				{title}
 			</label>
 		</>
@@ -15,15 +15,12 @@ function CheckBox({title}) {
 
 CheckBox.defaultProps = {
 	title: "Title",
-	titleBG: "#000",
-	bodyBG: "#FFF",
 };
 
 CheckBox.propTypes = {
 	title: PropTypes.string,
-	titleBG: PropTypes.string,
-	bodyBG: PropTypes.string,
-	children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.element), PropTypes.element]),
+	name: PropTypes.string,
+	onChange: PropTypes.func,
 };
 
 export default CheckBox;
