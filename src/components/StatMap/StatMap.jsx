@@ -155,7 +155,7 @@ function StatMap({armorData}) {
 }
 
 StatMap.propTypes = {
-	armorData: PropTypes.objectOf({
+	armorData: PropTypes.shapeOf({
 		class: PropTypes.number,
 		masterwork: PropTypes.bool,
 		stats: PropTypes.arrayOf(PropTypes.number),
