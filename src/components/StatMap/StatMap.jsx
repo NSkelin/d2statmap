@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import PropTypes from "prop-types";
 import styles from "./StatMap.module.css";
 import Menu from "../Menu";
 import Title from "../Title";
@@ -12,7 +13,35 @@ import {ReactComponent as ChestIcon} from "../../assets/chest.svg";
 import {ReactComponent as BootsIcon} from "../../assets/boots.svg";
 import {ReactComponent as ClassIcon} from "../../assets/helmet.svg";
 
-function StatMap() {
+function filterArmor(armorData, selectedClass, allowedArmorTypes) {
+	const characterClasses = Object.freeze({
+		0: "Titan",
+		1: "Hunter",
+		2: "Warlock",
+		3: "unknown",
+	});
+	const armorTypes = Object.freeze({
+		0: "helmet",
+		1: "gloves",
+		2: "chest",
+		3: "boots",
+		4: "classItem",
+	});
+
+	const filteredArmor = [];
+	for (const armor of armorData) {
+		const character = characterClasses[armor.class];
+		const type = armorTypes[armor.armor_type];
+
+		if (character != selectedClass) continue;
+		else if (allowedArmorTypes[type] === false) continue;
+
+		filteredArmor.push(armor);
+	}
+	return filteredArmor;
+}
+
+function StatMap({armorData}) {
 	const [selectedClass, setSelectedClass] = useState(null);
 	const [selectedArmorTypes, setSelectedArmorTypes] = useState({helmet: false, gloves: false, chest: false, boots: false, classItem: false});
 	const [sliderValues, setSliderValues] = useState({min: 2, max: 40});
@@ -43,6 +72,8 @@ function StatMap() {
 			[name]: value,
 		});
 	}
+
+	const filteredArmor = filterArmor(armorData, selectedClass, selectedArmorTypes);
 
 	return (
 		<div className={styles.center}>
@@ -107,6 +138,9 @@ function StatMap() {
 				</Title>
 				<Title title="HeatMap">
 					<HeatMap
+						armor={filteredArmor}
+						smoothing={options.smoothing}
+						sliderValues={sliderValues}
 						slider={{minRange: 0, maxRange: 40, minVal: sliderValues.min, maxVal: sliderValues.max, onChange: handleSliderChange}}
 					></HeatMap>
 				</Title>
@@ -119,5 +153,14 @@ function StatMap() {
 		</div>
 	);
 }
+
+StatMap.propTypes = {
+	armorData: PropTypes.objectOf({
+		class: PropTypes.number,
+		masterwork: PropTypes.bool,
+		stats: PropTypes.arrayOf(PropTypes.number),
+		armor_type: PropTypes.number,
+	}),
+};
 
 export default StatMap;
