@@ -87,6 +87,7 @@ HeatMap.propTypes = {
 			class: PropTypes.number,
 			masterwork: PropTypes.bool,
 			stats: PropTypes.arrayOf(PropTypes.number),
+			// eslint-disable-next-line camelcase
 			armor_type: PropTypes.number,
 		})
 	),
