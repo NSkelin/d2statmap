@@ -18,6 +18,7 @@ function Button({name, text, Icon, count, stretch, onClick, selected, showText})
 }
 
 Button.defaultProps = {
+	showText: true,
 	stretch: false,
 	selected: false,
 };
