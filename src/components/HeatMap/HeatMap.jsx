@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import PropTypes from "prop-types";
 import styles from "./HeatMap.module.css";
 import NoUiSlider from "../NoUiSlider";
@@ -22,7 +22,13 @@ function getStats(armors, minStat, maxStat) {
 	return stats;
 }
 
-function HeatMap({slider, smoothing, sliderValues, armor}) {
+function HeatMap({slider, smoothing, armor}) {
+	const [sliderValues, setSliderValues] = useState({min: 2, max: 40});
+
+	function handleSliderChange(values) {
+		setSliderValues({min: Number(values[0]), max: Number(values[1])});
+	}
+
 	const stats = getStats(armor, sliderValues.min, sliderValues.max);
 	return (
 		<div className={styles.statDisplay}>
@@ -55,9 +61,9 @@ function HeatMap({slider, smoothing, sliderValues, armor}) {
 				<NoUiSlider
 					minRange={slider.minRange}
 					maxRange={slider.maxRange}
-					minVal={slider.minVal}
-					maxVal={slider.maxVal}
-					onChange={slider.onChange}
+					minVal={sliderValues.min}
+					maxVal={sliderValues.max}
+					onChange={handleSliderChange}
 				></NoUiSlider>
 			</div>
 		</div>

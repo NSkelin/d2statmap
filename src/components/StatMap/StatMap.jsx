@@ -44,7 +44,6 @@ function filterArmor(armorData, selectedClass, allowedArmorTypes) {
 function StatMap({armorData}) {
 	const [selectedClass, setSelectedClass] = useState(null);
 	const [selectedArmorTypes, setSelectedArmorTypes] = useState({helmet: false, gloves: false, chest: false, boots: false, classItem: false});
-	const [sliderValues, setSliderValues] = useState({min: 2, max: 40});
 	const [options, setOptions] = useState({assumeMasterwork: false, simpleArmor: false, smoothing: false});
 
 	function handleClassSelect(buttonText) {
@@ -58,10 +57,6 @@ function StatMap({armorData}) {
 			...selectedArmorTypes,
 			[name]: value,
 		});
-	}
-
-	function handleSliderChange(values) {
-		setSliderValues({min: Number(values[0]), max: Number(values[1])});
 	}
 
 	function handleOptionChange(e) {
@@ -137,12 +132,7 @@ function StatMap({armorData}) {
 					></Button>
 				</Title>
 				<Title title="HeatMap">
-					<HeatMap
-						armor={filteredArmor}
-						smoothing={options.smoothing}
-						sliderValues={sliderValues}
-						slider={{minRange: 0, maxRange: 40, minVal: sliderValues.min, maxVal: sliderValues.max, onChange: handleSliderChange}}
-					></HeatMap>
+					<HeatMap armor={filteredArmor} smoothing={options.smoothing} slider={{minRange: 0, maxRange: 40}}></HeatMap>
 				</Title>
 			</Menu>
 			<Menu title="Options" titleBG="#232323" bodyBG="#323232">
