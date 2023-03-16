@@ -132,7 +132,12 @@ function StatMap({armorData}) {
 					></Button>
 				</Title>
 				<Title title="HeatMap">
-					<HeatMap armor={filteredArmor} smoothing={options.smoothing} slider={{minRange: 0, maxRange: 40}}></HeatMap>
+					<HeatMap
+						assumeMasterwork={options.assumeMasterwork}
+						armor={filteredArmor}
+						smoothing={options.smoothing}
+						slider={{minRange: 0, maxRange: 40}}
+					></HeatMap>
 				</Title>
 			</Menu>
 			<Menu title="Options" titleBG="#232323" bodyBG="#323232">

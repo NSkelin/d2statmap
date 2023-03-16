@@ -10,10 +10,13 @@ import {ReactComponent as DisciplineIcon} from "../../assets/discipline.svg";
 import {ReactComponent as IntellectIcon} from "../../assets/intellect.svg";
 import {ReactComponent as StrengthIcon} from "../../assets/strength.svg";
 
-function getStats(armors, minStat, maxStat) {
+function getArmorStats(armors, minStat, maxStat, assumeMasterwork) {
 	let stats = [[], [], [], [], [], []];
 	for (let armor of armors) {
-		for (const [i, stat] of armor.stats.entries()) {
+		for (let [i, stat] of armor.stats.entries()) {
+			if (assumeMasterwork && !armor.masterwork) {
+				stat += 2;
+			}
 			if (stat > minStat && stat <= maxStat) {
 				stats[i].push(stat);
 			}
@@ -22,14 +25,14 @@ function getStats(armors, minStat, maxStat) {
 	return stats;
 }
 
-function HeatMap({slider, smoothing, armor}) {
+function HeatMap({slider, smoothing, armor, assumeMasterwork}) {
 	const [sliderValues, setSliderValues] = useState({min: 2, max: 40});
 
 	function handleSliderChange(values) {
 		setSliderValues({min: Number(values[0]), max: Number(values[1])});
 	}
 
-	const stats = getStats(armor, sliderValues.min, sliderValues.max);
+	const stats = getArmorStats(armor, sliderValues.min, sliderValues.max, assumeMasterwork);
 	return (
 		<div className={styles.statDisplay}>
 			<div className={styles.statIdentifiers}>
@@ -73,15 +76,13 @@ function HeatMap({slider, smoothing, armor}) {
 HeatMap.defaultProps = {
 	minRange: 0,
 	maxRaminRange: 100,
+	assumeMasterwork: false,
 };
 
 HeatMap.propTypes = {
 	slider: PropTypes.shape({
 		minRange: PropTypes.number,
 		maxRange: PropTypes.number,
-		minVal: PropTypes.number,
-		maxVal: PropTypes.number,
-		onChange: PropTypes.func,
 	}),
 	smoothing: PropTypes.bool,
 	sliderValues: PropTypes.shape({
@@ -97,6 +98,7 @@ HeatMap.propTypes = {
 			armor_type: PropTypes.number,
 		})
 	),
+	assumeMasterwork: PropTypes.bool,
 };
 
 export default HeatMap;
