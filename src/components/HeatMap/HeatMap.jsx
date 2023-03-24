@@ -11,7 +11,7 @@ import {ReactComponent as IntellectIcon} from "../../assets/intellect.svg";
 import {ReactComponent as StrengthIcon} from "../../assets/strength.svg";
 
 function HeatMap({slider, smoothing, armor}) {
-	const [sliderValues, setSliderValues] = useState({min: 2, max: 40});
+	const [sliderValues, setSliderValues] = useState({min: slider.minRange, max: slider.maxRange});
 
 	function handleSliderChange(values) {
 		setSliderValues({min: Number(values[0]), max: Number(values[1])});
