@@ -9,7 +9,7 @@ function App() {
 		<div className={styles.app}>
 			<NavBar></NavBar>
 			<div className={styles.content}>
-				<StatMap armorData={dummyData}></StatMap>
+				<StatMap armorData={dummyData} minRange={2} maxRange={32}></StatMap>
 			</div>
 		</div>
 	);
