@@ -17,6 +17,17 @@ function HeatMap({slider, smoothing, armor}) {
 		setSliderValues({min: Number(values[0]), max: Number(values[1])});
 	}
 
+	const statBars = armor.map((values, index) => (
+		<StatBar
+			key={index}
+			values={values}
+			smoothing={smoothing}
+			minRange={sliderValues.min}
+			maxRange={sliderValues.max}
+			baseHSLCode={"hsl(0, 0%, 35%)"}
+		></StatBar>
+	));
+
 	return (
 		<div className={styles.statDisplay}>
 			<div className={styles.statIdentifiers}>
@@ -38,49 +49,7 @@ function HeatMap({slider, smoothing, armor}) {
 				</div>
 			</div>
 			<div className={styles.statBars}>
-				<StatBar
-					values={armor[0]}
-					smoothing={smoothing}
-					minRange={sliderValues.min}
-					maxRange={sliderValues.max}
-					baseHSLCode={"hsl(0, 0%, 35%)"}
-				></StatBar>
-				<StatBar
-					values={armor[1]}
-					smoothing={smoothing}
-					minRange={sliderValues.min}
-					maxRange={sliderValues.max}
-					baseHSLCode={"hsl(0, 0%, 35%)"}
-				></StatBar>
-				<StatBar
-					values={armor[2]}
-					smoothing={smoothing}
-					minRange={sliderValues.min}
-					maxRange={sliderValues.max}
-					baseHSLCode={"hsl(0, 0%, 35%)"}
-				></StatBar>
-				<StatBar
-					values={armor[3]}
-					smoothing={smoothing}
-					minRange={sliderValues.min}
-					maxRange={sliderValues.max}
-					baseHSLCode={"hsl(0, 0%, 35%)"}
-				></StatBar>
-				<StatBar
-					values={armor[4]}
-					smoothing={smoothing}
-					minRange={sliderValues.min}
-					maxRange={sliderValues.max}
-					baseHSLCode={"hsl(0, 0%, 35%)"}
-				></StatBar>
-				<StatBar
-					values={armor[5]}
-					smoothing={smoothing}
-					minRange={sliderValues.min}
-					maxRange={sliderValues.max}
-					baseHSLCode={"hsl(0, 0%, 35%)"}
-				></StatBar>
-
+				{statBars}
 				<NoUiSlider
 					minRange={slider.minRange}
 					maxRange={slider.maxRange}
