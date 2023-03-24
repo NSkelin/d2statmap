@@ -10,29 +10,13 @@ import {ReactComponent as DisciplineIcon} from "../../assets/discipline.svg";
 import {ReactComponent as IntellectIcon} from "../../assets/intellect.svg";
 import {ReactComponent as StrengthIcon} from "../../assets/strength.svg";
 
-function getArmorStats(armors, minStat, maxStat, assumeMasterwork) {
-	let stats = [[], [], [], [], [], []];
-	for (let armor of armors) {
-		for (let [i, stat] of armor.stats.entries()) {
-			if (assumeMasterwork && !armor.masterwork) {
-				stat += 2;
-			}
-			if (stat > minStat && stat <= maxStat) {
-				stats[i].push(stat);
-			}
-		}
-	}
-	return stats;
-}
-
-function HeatMap({slider, smoothing, armor, assumeMasterwork}) {
+function HeatMap({slider, smoothing, armor}) {
 	const [sliderValues, setSliderValues] = useState({min: 2, max: 40});
 
 	function handleSliderChange(values) {
 		setSliderValues({min: Number(values[0]), max: Number(values[1])});
 	}
 
-	const stats = getArmorStats(armor, sliderValues.min, sliderValues.max, assumeMasterwork);
 	return (
 		<div className={styles.statDisplay}>
 			<div className={styles.statIdentifiers}>
@@ -54,12 +38,48 @@ function HeatMap({slider, smoothing, armor, assumeMasterwork}) {
 				</div>
 			</div>
 			<div className={styles.statBars}>
-				<StatBar values={stats[0]} pixelsPerStat={5} smoothing={smoothing}></StatBar>
-				<StatBar values={stats[1]} pixelsPerStat={5} smoothing={smoothing}></StatBar>
-				<StatBar values={stats[2]} pixelsPerStat={5} smoothing={smoothing}></StatBar>
-				<StatBar values={stats[3]} pixelsPerStat={5} smoothing={smoothing}></StatBar>
-				<StatBar values={stats[4]} pixelsPerStat={5} smoothing={smoothing}></StatBar>
-				<StatBar values={stats[5]} pixelsPerStat={5} smoothing={smoothing}></StatBar>
+				<StatBar
+					values={armor[0]}
+					smoothing={smoothing}
+					minRange={sliderValues.min}
+					maxRange={sliderValues.max}
+					baseHSLCode={"hsl(0, 0%, 35%)"}
+				></StatBar>
+				<StatBar
+					values={armor[1]}
+					smoothing={smoothing}
+					minRange={sliderValues.min}
+					maxRange={sliderValues.max}
+					baseHSLCode={"hsl(0, 0%, 35%)"}
+				></StatBar>
+				<StatBar
+					values={armor[2]}
+					smoothing={smoothing}
+					minRange={sliderValues.min}
+					maxRange={sliderValues.max}
+					baseHSLCode={"hsl(0, 0%, 35%)"}
+				></StatBar>
+				<StatBar
+					values={armor[3]}
+					smoothing={smoothing}
+					minRange={sliderValues.min}
+					maxRange={sliderValues.max}
+					baseHSLCode={"hsl(0, 0%, 35%)"}
+				></StatBar>
+				<StatBar
+					values={armor[4]}
+					smoothing={smoothing}
+					minRange={sliderValues.min}
+					maxRange={sliderValues.max}
+					baseHSLCode={"hsl(0, 0%, 35%)"}
+				></StatBar>
+				<StatBar
+					values={armor[5]}
+					smoothing={smoothing}
+					minRange={sliderValues.min}
+					maxRange={sliderValues.max}
+					baseHSLCode={"hsl(0, 0%, 35%)"}
+				></StatBar>
 
 				<NoUiSlider
 					minRange={slider.minRange}
@@ -89,15 +109,7 @@ HeatMap.propTypes = {
 		min: PropTypes.number,
 		max: PropTypes.number,
 	}),
-	armor: PropTypes.arrayOf(
-		PropTypes.shape({
-			class: PropTypes.number,
-			masterwork: PropTypes.bool,
-			stats: PropTypes.arrayOf(PropTypes.number),
-			// eslint-disable-next-line camelcase
-			armor_type: PropTypes.number,
-		})
-	),
+	armor: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
 	assumeMasterwork: PropTypes.bool,
 };
 
