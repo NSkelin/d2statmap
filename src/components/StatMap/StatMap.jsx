@@ -13,37 +13,9 @@ import {ReactComponent as ChestIcon} from "../../assets/chest.svg";
 import {ReactComponent as BootsIcon} from "../../assets/boots.svg";
 import {ReactComponent as ClassIcon} from "../../assets/helmet.svg";
 
-function filterArmor(armorData, selectedClass, allowedArmorTypes) {
-	const characterClasses = Object.freeze({
-		0: "Titan",
-		1: "Hunter",
-		2: "Warlock",
-		3: "unknown",
-	});
-	const armorTypes = Object.freeze({
-		0: "helmet",
-		1: "gloves",
-		2: "chest",
-		3: "boots",
-		4: "classItem",
-	});
-
-	const filteredArmor = [];
-	for (const armor of armorData) {
-		const character = characterClasses[armor.class];
-		const type = armorTypes[armor.armor_type];
-
-		if (character != selectedClass) continue;
-		else if (allowedArmorTypes[type] === false) continue;
-
-		filteredArmor.push(armor);
-	}
-	return filteredArmor;
-}
-
-function StatMap({armorData}) {
-	const [selectedClass, setSelectedClass] = useState(null);
-	const [selectedArmorTypes, setSelectedArmorTypes] = useState({helmet: false, gloves: false, chest: false, boots: false, classItem: false});
+function StatMap({armorData, minRange, maxRange}) {
+	const [selectedClass, setSelectedClass] = useState("Hunter");
+	const [selectedArmorTypes, setSelectedArmorTypes] = useState({helmet: true, gloves: true, chest: true, boots: true, classItem: true});
 	const [options, setOptions] = useState({assumeMasterwork: false, simpleArmor: false, smoothing: false});
 
 	function handleClassSelect(buttonText) {
@@ -68,7 +40,7 @@ function StatMap({armorData}) {
 		});
 	}
 
-	const filteredArmor = filterArmor(armorData, selectedClass, selectedArmorTypes);
+	const normalizedStats = parseArmor(armorData, selectedClass, selectedArmorTypes, options.assumeMasterwork, minRange, maxRange);
 
 	return (
 		<div className={styles.center}>
@@ -134,9 +106,9 @@ function StatMap({armorData}) {
 				<Title title="HeatMap">
 					<HeatMap
 						assumeMasterwork={options.assumeMasterwork}
-						armor={filteredArmor}
+						armor={normalizedStats}
 						smoothing={options.smoothing}
-						slider={{minRange: 0, maxRange: 40}}
+						slider={{minRange, maxRange}}
 					></HeatMap>
 				</Title>
 			</Menu>
@@ -149,6 +121,85 @@ function StatMap({armorData}) {
 	);
 }
 
+function parseArmor(armorData, selectedClass, selectedArmorTypes, assumeMasterwork, minRange, maxRange) {
+	const filteredArmor = filterArmor(armorData, selectedClass, selectedArmorTypes);
+	const stats = getArmorStats(filteredArmor, assumeMasterwork);
+	return normalizeArmorStats(stats, minRange, maxRange);
+}
+
+function filterArmor(armorData, selectedClass, allowedArmorTypes) {
+	const characterClasses = Object.freeze({
+		0: "Titan",
+		1: "Hunter",
+		2: "Warlock",
+		3: "unknown",
+	});
+	const armorTypes = Object.freeze({
+		0: "helmet",
+		1: "gloves",
+		2: "chest",
+		3: "boots",
+		4: "classItem",
+	});
+
+	const filteredArmor = [];
+	for (const armor of armorData) {
+		const character = characterClasses[armor.class];
+		const type = armorTypes[armor.armor_type];
+
+		if (character != selectedClass) continue;
+		else if (allowedArmorTypes[type] === false) continue;
+
+		filteredArmor.push(armor);
+	}
+	return filteredArmor;
+}
+
+function getArmorStats(armors, assumeMasterwork) {
+	let stats = [[], [], [], [], [], []];
+	for (let armor of armors) {
+		for (let [i, stat] of armor.stats.entries()) {
+			if (assumeMasterwork && !armor.masterwork) {
+				stat += 2;
+			}
+			stats[i].push(stat);
+		}
+	}
+	return stats;
+}
+
+// for each array it will count how many numbers in the stats array are higher than each point in the range
+// of values that the stat map will display and then normalizes that count to determine the color
+// of each point on the stat map / heatmap
+function normalizeArmorStats(armorStats, minRange, maxRange) {
+	let normalizedArmorStats = [];
+	for (let stats of armorStats) {
+		normalizedArmorStats.push(normalizeStats(stats, minRange, maxRange));
+	}
+	return normalizedArmorStats;
+}
+
+// counts how many numbers in the stats array are higher than each point in the range the stat map will display
+// and then normalizes that count to determine the color of each point on the stat map / heatmap
+function normalizeStats(stats, minRange, maxRange) {
+	// sort stats into ascending order
+	stats.sort((a, b) => a - b);
+
+	let n = 0;
+	let normalizedValues = [];
+	for (let i = minRange; i <= maxRange + 1; i++) {
+		while (stats[n] < i && n < stats.length) {
+			n++;
+		}
+
+		let count = stats.length - n;
+		let normalizedValue = Math.round((count / stats.length) * 100) / 100; //rounds to 2 decimal
+		normalizedValues.push(normalizedValue);
+	}
+
+	return normalizedValues;
+}
+
 StatMap.propTypes = {
 	armorData: PropTypes.arrayOf(
 		PropTypes.shape({
@@ -159,6 +210,8 @@ StatMap.propTypes = {
 			armor_type: PropTypes.number,
 		})
 	),
+	minRange: PropTypes.number,
+	maxRange: PropTypes.number,
 };
 
 export default StatMap;
