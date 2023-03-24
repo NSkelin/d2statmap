@@ -2,39 +2,33 @@ import React from "react";
 import PropTypes from "prop-types";
 import styles from "./StatBar.module.css";
 
-const gradients = [
-	[165, 207, 255, 0.8],
-	[255, 249, 165, 0.8],
-	[255, 251, 30, 0.8],
-	[255, 145, 0, 0.8],
-	[255, 0, 0, 0.8],
-];
+// creates a css gradient code
+function createHeatMap(values, range, smoothing, baseHSLCode) {
+	let heatMapGradientCSS = "linear-gradient(to right, ";
+	let gradientGrowthPercent = 100 / (range + 1); // +1 because starting at 2, 2 -> 31 = 30
+	let gradientLength = gradientGrowthPercent;
 
-function createHeatMapSection(rgbCode, pixelLength, smoothing) {
-	let gradientSection = "";
-	if (!smoothing) gradientSection += "rgba" + "(" + rgbCode + ") 0px, ";
-	gradientSection += "rgba" + "(" + rgbCode + ") " + pixelLength + "px";
+	for (const value of values) {
+		let hslCode = baseHSLCode;
 
-	return gradientSection;
-}
+		if (value > 0) {
+			const h = (1 - value) * 240;
+			hslCode = `hsl(${h}, 100%, 50%)`;
+		}
 
-function createHeatMap(values, smoothing) {
-	let heatMapGradientCSS = "#585858 0px, #585858 100%)";
+		if (!smoothing) heatMapGradientCSS += `${hslCode} 0%, `;
+		heatMapGradientCSS += `${hslCode} ${gradientLength}%,`;
 
-	for (const [i, pixel] of values.entries()) {
-		const gradient = i < gradients.length ? gradients[i] : gradients[gradients.length - 1];
-		heatMapGradientCSS = ", " + heatMapGradientCSS;
-		heatMapGradientCSS = createHeatMapSection(gradient, pixel, smoothing) + heatMapGradientCSS;
+		gradientLength += gradientGrowthPercent;
 	}
 
-	heatMapGradientCSS = "linear-gradient(to right, " + heatMapGradientCSS;
+	heatMapGradientCSS += "#585858 0px, #585858 100%)";
 	return heatMapGradientCSS;
 }
 
-function StatBar({values, pixelsPerStat, smoothing}) {
-	values = values.map((value) => value * pixelsPerStat);
-	values.sort((a, b) => b - a);
-	const gradient = createHeatMap(values, smoothing);
+function StatBar({values, smoothing, minRange, maxRange, baseHSLCode}) {
+	const valuesInRange = values.slice(minRange - 2, maxRange - 1); // +1 because starting at 2, 2 -> 31 = 30
+	const gradient = createHeatMap(valuesInRange, maxRange - minRange, smoothing, baseHSLCode);
 
 	return (
 		<>
@@ -44,14 +38,15 @@ function StatBar({values, pixelsPerStat, smoothing}) {
 }
 
 StatBar.defaultProps = {
-	pixelsPerStat: 10,
 	smoothing: false,
 };
 
 StatBar.propTypes = {
 	values: PropTypes.arrayOf(PropTypes.number),
-	pixelsPerStat: PropTypes.number,
 	smoothing: PropTypes.bool,
+	minRange: PropTypes.number,
+	maxRange: PropTypes.number,
+	baseHSLCode: PropTypes.string,
 };
 
 export default StatBar;
