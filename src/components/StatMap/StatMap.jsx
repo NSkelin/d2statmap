@@ -40,8 +40,16 @@ function StatMap({armorData, minRange, maxRange}) {
 		});
 	}
 
-	const normalizedStats = parseArmor(armorData, selectedClass, selectedArmorTypes, options.assumeMasterwork, minRange, maxRange);
 	const armorCount = countArmor(armorData);
+	const normalizedStats = parseArmor(
+		armorData,
+		selectedClass,
+		selectedArmorTypes,
+		options.assumeMasterwork,
+		minRange,
+		maxRange,
+		armorCount[selectedClass].total
+	);
 
 	return (
 		<div className={styles.center}>
@@ -153,10 +161,10 @@ function countArmor(armorData) {
 	return characterArmors;
 }
 
-function parseArmor(armorData, selectedClass, selectedArmorTypes, assumeMasterwork, minRange, maxRange) {
+function parseArmor(armorData, selectedClass, selectedArmorTypes, assumeMasterwork, minRange, maxRange, normalizeCount) {
 	const filteredArmor = filterArmor(armorData, selectedClass, selectedArmorTypes);
 	const stats = getArmorStats(filteredArmor, assumeMasterwork);
-	return normalizeArmorStats(stats, minRange, maxRange);
+	return normalizeArmorStats(stats, minRange, maxRange, normalizeCount);
 }
 
 function filterArmor(armorData, selectedClass, allowedArmorTypes) {
@@ -203,17 +211,17 @@ function getArmorStats(armors, assumeMasterwork) {
 // for each array it will count how many numbers in the stats array are higher than each point in the range
 // of values that the stat map will display and then normalizes that count to determine the color
 // of each point on the stat map / heatmap
-function normalizeArmorStats(armorStats, minRange, maxRange) {
+function normalizeArmorStats(armorStats, minRange, maxRange, normalizeCount) {
 	let normalizedArmorStats = [];
 	for (let stats of armorStats) {
-		normalizedArmorStats.push(normalizeStats(stats, minRange, maxRange));
+		normalizedArmorStats.push(normalizeStats(stats, minRange, maxRange, normalizeCount));
 	}
 	return normalizedArmorStats;
 }
 
 // counts how many numbers in the stats array are higher than each point in the range the stat map will display
 // and then normalizes that count to determine the color of each point on the stat map / heatmap
-function normalizeStats(stats, minRange, maxRange) {
+function normalizeStats(stats, minRange, maxRange, normalizeCount) {
 	// sort stats into ascending order
 	stats.sort((a, b) => a - b);
 
@@ -225,7 +233,7 @@ function normalizeStats(stats, minRange, maxRange) {
 		}
 
 		let count = stats.length - n;
-		let normalizedValue = Math.round((count / stats.length) * 100) / 100; //rounds to 2 decimal
+		let normalizedValue = Math.round((count / normalizeCount) * 100) / 100; //rounds to 2 decimal
 		normalizedValues.push(normalizedValue);
 	}
 
