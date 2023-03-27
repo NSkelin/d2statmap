@@ -115,7 +115,6 @@ function StatMap({armorData, minRange, maxRange}) {
 			</Menu>
 			<Menu title="Options" titleBG="#232323" bodyBG="#323232">
 				<CheckBox onChange={handleOptionChange} name={"assumeMasterwork"} title={"Assume masterwork"}></CheckBox>
-				<CheckBox onChange={handleOptionChange} name={"simpleArmor"} title={"Simple armor selection"}></CheckBox>
 				<CheckBox onChange={handleOptionChange} name={"smoothing"} title={"Heatbar smoothing"}></CheckBox>
 			</Menu>
 		</div>
