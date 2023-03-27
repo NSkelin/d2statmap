@@ -41,6 +41,7 @@ function StatMap({armorData, minRange, maxRange}) {
 	}
 
 	const normalizedStats = parseArmor(armorData, selectedClass, selectedArmorTypes, options.assumeMasterwork, minRange, maxRange);
+	const armorCharacterCount = countCharacterArmor(armorData);
 
 	return (
 		<div className={styles.center}>
@@ -50,9 +51,9 @@ function StatMap({armorData, minRange, maxRange}) {
 						onSelect={handleClassSelect}
 						selectedButtonText={selectedClass}
 						buttons={[
-							{stretch: true, text: "Hunter", icon: HelmetIcon, count: 10},
-							{stretch: true, text: "Warlock", icon: HelmetIcon, count: 147},
-							{stretch: true, text: "Titan", icon: HelmetIcon, count: 26},
+							{stretch: true, text: "Hunter", icon: HelmetIcon, count: armorCharacterCount.Hunter.total},
+							{stretch: true, text: "Warlock", icon: HelmetIcon, count: armorCharacterCount.Warlock.total},
+							{stretch: true, text: "Titan", icon: HelmetIcon, count: armorCharacterCount.Titan.total},
 						]}
 					></SelectOneButton>
 				</Title>
@@ -64,7 +65,7 @@ function StatMap({armorData, minRange, maxRange}) {
 						text="Helmet"
 						showText={false}
 						Icon={HelmetIcon}
-						count={10}
+						count={armorCharacterCount[selectedClass].helmet}
 					></Button>
 					<Button
 						name={"gloves"}
@@ -73,7 +74,7 @@ function StatMap({armorData, minRange, maxRange}) {
 						text="Gloves"
 						showText={false}
 						Icon={GlovesIcon}
-						count={47}
+						count={armorCharacterCount[selectedClass].gloves}
 					></Button>
 					<Button
 						name={"chest"}
@@ -82,7 +83,7 @@ function StatMap({armorData, minRange, maxRange}) {
 						text="Chest"
 						showText={false}
 						Icon={ChestIcon}
-						count={26}
+						count={armorCharacterCount[selectedClass].chest}
 					></Button>
 					<Button
 						name={"boots"}
@@ -91,7 +92,7 @@ function StatMap({armorData, minRange, maxRange}) {
 						text="Boots"
 						showText={false}
 						Icon={BootsIcon}
-						count={14}
+						count={armorCharacterCount[selectedClass].boots}
 					></Button>
 					<Button
 						name={"classItem"}
@@ -100,7 +101,7 @@ function StatMap({armorData, minRange, maxRange}) {
 						text="ClassItem"
 						showText={false}
 						Icon={ClassIcon}
-						count={36}
+						count={armorCharacterCount[selectedClass].classItem}
 					></Button>
 				</Title>
 				<Title title="HeatMap">
@@ -119,6 +120,38 @@ function StatMap({armorData, minRange, maxRange}) {
 			</Menu>
 		</div>
 	);
+}
+
+function countCharacterArmor(armorData) {
+	const characterClasses = Object.freeze({
+		0: "Titan",
+		1: "Hunter",
+		2: "Warlock",
+		3: "unknown",
+	});
+	const armorTypes = Object.freeze({
+		0: "helmet",
+		1: "gloves",
+		2: "chest",
+		3: "boots",
+		4: "classItem",
+	});
+
+	const characterArmors = {};
+
+	for (let armor of armorData) {
+		const character = characterClasses[armor.class];
+		if (characterArmors[character] === undefined) {
+			characterArmors[character] = {total: 1};
+		} else characterArmors[character].total = characterArmors[character].total + 1;
+
+		const type = armorTypes[armor.armor_type];
+		if (characterArmors[character][type] === undefined) {
+			characterArmors[character][type] = 1;
+		} else characterArmors[character][type] = characterArmors[character][type] + 1;
+	}
+
+	return characterArmors;
 }
 
 function parseArmor(armorData, selectedClass, selectedArmorTypes, assumeMasterwork, minRange, maxRange) {
