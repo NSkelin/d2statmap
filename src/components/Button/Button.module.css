@@ -4,6 +4,7 @@
     justify-content: space-between;
     padding: 10px;
     color: white;
+    align-items: center;
 }
 .button {
     background-color: #525252;
