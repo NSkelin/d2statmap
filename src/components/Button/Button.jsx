@@ -15,8 +15,7 @@ const StyledButton = styled.button`
 	flex: ${(props) => (props.stretch ? 1 : 0)};
 	:hover,
 	:active {
-		background-color: #747474;
-		border: solid 1px #b8b8b8;
+		background-color: #797979;
 		cursor: pointer;
 	}
 	:active {
@@ -25,6 +24,12 @@ const StyledButton = styled.button`
 	&.selected {
 		background-color: #747474;
 		border: solid 1px #b8b8b8;
+	}
+	&.selected:hover {
+		background-color: #686868;
+	}
+	&.selected:active {
+		background-color: #5a5a5a;
 	}
 `;
 
