@@ -1,19 +1,45 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styles from "./Button.module.css";
+import styled from "styled-components";
+
+const StyledButton = styled.button`
+	background-color: #525252;
+	border: solid 1px #848484;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding: 10px;
+	color: white;
+	align-items: center;
+	flex: ${(props) => (props.stretch ? 1 : 0)};
+	:hover {
+		background-color: #747474;
+		border: solid 1px #b8b8b8;
+		cursor: pointer;
+	}
+	:active {
+		background-color: #666666;
+		border: solid 1px #b8b8b8;
+		cursor: pointer;
+	}
+	&.selectedButton {
+		background-color: #747474;
+		border: solid 1px #b8b8b8;
+	}
+`;
 
 function Button({name, text, Icon, count, stretch, onClick, selected, showText}) {
-	const flexVal = stretch ? 1 : 0;
-	const style = selected ? styles.selectedButton : styles.button;
+	const style = selected ? "selectedButton" : null;
 
 	return (
-		<button name={name} onClick={onClick} className={style} style={{flex: flexVal}}>
+		<StyledButton name={name} onClick={onClick} className={style} stretch={stretch}>
 			{showText ? text : null}
 			<div className={styles.armorCount}>
 				<Icon className={styles.icon}></Icon>
 				<div>x{count}</div>
 			</div>
-		</button>
+		</StyledButton>
 	);
 }
 
