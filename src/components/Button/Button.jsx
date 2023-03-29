@@ -13,24 +13,23 @@ const StyledButton = styled.button`
 	color: white;
 	align-items: center;
 	flex: ${(props) => (props.stretch ? 1 : 0)};
-	:hover {
+	:hover,
+	:active {
 		background-color: #747474;
 		border: solid 1px #b8b8b8;
 		cursor: pointer;
 	}
 	:active {
 		background-color: #666666;
-		border: solid 1px #b8b8b8;
-		cursor: pointer;
 	}
-	&.selectedButton {
+	&.selected {
 		background-color: #747474;
 		border: solid 1px #b8b8b8;
 	}
 `;
 
 function Button({name, text, Icon, count, stretch, onClick, selected, showText}) {
-	const style = selected ? "selectedButton" : null;
+	const style = selected ? "selected" : null;
 
 	return (
 		<StyledButton name={name} onClick={onClick} className={style} stretch={stretch}>
