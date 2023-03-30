@@ -1,20 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Button from "../button";
+import IconCount from "../IconCount";
 
 function SelectOneButton({buttons, onSelect, selectedButtonText}) {
 	return (
 		<>
 			{buttons.map((button, index) => (
-				<Button
-					key={index}
-					stretch={button.stretch}
-					text={button.text}
-					Icon={button.icon}
-					count={button.count}
-					onClick={() => onSelect(button.text)}
-					selected={selectedButtonText === button.text}
-				></Button>
+				<Button key={index} stretch={button.stretch} onClick={() => onSelect(button.text)} selected={selectedButtonText === button.text}>
+					{button.text}
+					<IconCount Icon={button.icon} count={button.count}></IconCount>
+				</Button>
 			))}
 		</>
 	);

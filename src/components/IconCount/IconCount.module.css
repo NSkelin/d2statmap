@@ -1,0 +1,11 @@
+.wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 10px;
+}
+.icon{
+    fill: #A4A4A4;
+    width: 20px;
+    height: 20px;
+}

@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styles from "./Button.module.css";
 import styled from "styled-components";
 
 const StyledButton = styled.button`
@@ -33,35 +32,27 @@ const StyledButton = styled.button`
 	}
 `;
 
-function Button({name, text, Icon, count, stretch, onClick, selected, showText}) {
+function Button({name, stretch, onClick, selected, children}) {
 	const style = selected ? "selected" : null;
 
 	return (
 		<StyledButton name={name} onClick={onClick} className={style} stretch={stretch}>
-			{showText ? text : null}
-			<div className={styles.armorCount}>
-				<Icon className={styles.icon}></Icon>
-				<div>x{count}</div>
-			</div>
+			{children}
 		</StyledButton>
 	);
 }
 
 Button.defaultProps = {
-	showText: true,
 	stretch: false,
 	selected: false,
 };
 
 Button.propTypes = {
-	text: PropTypes.string,
-	Icon: PropTypes.elementType,
-	count: PropTypes.number,
 	stretch: PropTypes.bool,
 	onClick: PropTypes.func,
 	selected: PropTypes.bool,
-	showText: PropTypes.bool,
 	name: PropTypes.string,
+	children: PropTypes.any,
 };
 
 export default Button;

@@ -12,6 +12,7 @@ import {ReactComponent as GlovesIcon} from "../../assets/gloves.svg";
 import {ReactComponent as ChestIcon} from "../../assets/chest.svg";
 import {ReactComponent as BootsIcon} from "../../assets/boots.svg";
 import {ReactComponent as ClassIcon} from "../../assets/helmet.svg";
+import IconCount from "../IconCount";
 
 function StatMap({armorData, minRange, maxRange}) {
 	const [selectedClass, setSelectedClass] = useState("Hunter");
@@ -66,51 +67,21 @@ function StatMap({armorData, minRange, maxRange}) {
 					></SelectOneButton>
 				</Title>
 				<Title title="Armor selection">
-					<Button
-						name={"helmet"}
-						onClick={handleArmorTypesSelection}
-						selected={selectedArmorTypes.helmet}
-						text="Helmet"
-						showText={false}
-						Icon={HelmetIcon}
-						count={armorCount[selectedClass].helmet}
-					></Button>
-					<Button
-						name={"gloves"}
-						onClick={handleArmorTypesSelection}
-						selected={selectedArmorTypes.gloves}
-						text="Gloves"
-						showText={false}
-						Icon={GlovesIcon}
-						count={armorCount[selectedClass].gloves}
-					></Button>
-					<Button
-						name={"chest"}
-						onClick={handleArmorTypesSelection}
-						selected={selectedArmorTypes.chest}
-						text="Chest"
-						showText={false}
-						Icon={ChestIcon}
-						count={armorCount[selectedClass].chest}
-					></Button>
-					<Button
-						name={"boots"}
-						onClick={handleArmorTypesSelection}
-						selected={selectedArmorTypes.boots}
-						text="Boots"
-						showText={false}
-						Icon={BootsIcon}
-						count={armorCount[selectedClass].boots}
-					></Button>
-					<Button
-						name={"classItem"}
-						onClick={handleArmorTypesSelection}
-						selected={selectedArmorTypes.classItem}
-						text="ClassItem"
-						showText={false}
-						Icon={ClassIcon}
-						count={armorCount[selectedClass].classItem}
-					></Button>
+					<Button name={"helmet"} onClick={handleArmorTypesSelection} selected={selectedArmorTypes.helmet}>
+						<IconCount Icon={HelmetIcon} count={armorCount[selectedClass].helmet}></IconCount>
+					</Button>
+					<Button name={"gloves"} onClick={handleArmorTypesSelection} selected={selectedArmorTypes.gloves}>
+						<IconCount Icon={GlovesIcon} count={armorCount[selectedClass].gloves}></IconCount>
+					</Button>
+					<Button name={"chest"} onClick={handleArmorTypesSelection} selected={selectedArmorTypes.chest}>
+						<IconCount Icon={ChestIcon} count={armorCount[selectedClass].chest}></IconCount>
+					</Button>
+					<Button name={"boots"} onClick={handleArmorTypesSelection} selected={selectedArmorTypes.boots}>
+						<IconCount Icon={BootsIcon} count={armorCount[selectedClass].boots}></IconCount>
+					</Button>
+					<Button name={"classItem"} onClick={handleArmorTypesSelection} selected={selectedArmorTypes.classItem}>
+						<IconCount Icon={ClassIcon} count={armorCount[selectedClass].classItem}></IconCount>
+					</Button>
 				</Title>
 				<Title title="HeatMap">
 					<HeatMap
