@@ -1,7 +1,7 @@
 {
 	"scripts": {
-		"dev": "server",
-		"build": "vite build",
+		"dev": "next dev",
+		"build": "next build",
 		"preview": "vite preview",
 		"vite": "vite",
 		"server": "nodemon server.js",
