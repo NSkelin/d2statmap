@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import {NavBar, StatMap} from "../components";
-import "../style.css";
 import styles from "../app.module.css";
 import dummyData from "../../dummyData.json";
 
