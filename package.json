@@ -13,6 +13,7 @@
 	"main": "server.js",
 	"private": true,
 	"devDependencies": {
+		"@svgr/webpack": "^7.0.0",
 		"@types/react": "^18.0.28",
 		"@types/react-dom": "^18.0.11",
 		"@vitejs/plugin-react": "^3.1.0",
