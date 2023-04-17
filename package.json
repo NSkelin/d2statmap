@@ -2,10 +2,8 @@
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
-		"preview": "vite preview",
-		"vite": "vite",
-		"server": "nodemon server.js",
-		"server:https": "nodemon devFiles/startHTTPSServer.js"
+		"start": "next start",
+		"lint": "next lint"
 	},
 	"name": "d2statmap",
 	"version": "0.0.1",
