@@ -7,11 +7,11 @@ import HeatMap from "../HeatMap";
 import Button from "../Button";
 import CheckBox from "../CheckBox";
 import SelectOneButton from "../SelectOneButton";
-import {ReactComponent as HelmetIcon} from "../../assets/helmet.svg";
-import {ReactComponent as GlovesIcon} from "../../assets/gloves.svg";
-import {ReactComponent as ChestIcon} from "../../assets/chest.svg";
-import {ReactComponent as BootsIcon} from "../../assets/boots.svg";
-import {ReactComponent as ClassIcon} from "../../assets/helmet.svg";
+import HelmetIcon from "../../assets/helmet.svg";
+import GlovesIcon from "../../assets/gloves.svg";
+import ChestIcon from "../../assets/chest.svg";
+import BootsIcon from "../../assets/boots.svg";
+import ClassIcon from "../../assets/helmet.svg";
 import IconCount from "../IconCount";
 
 function StatMap({armorData, minRange, maxRange}) {

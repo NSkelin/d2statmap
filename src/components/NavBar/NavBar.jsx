@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./NavBar.module.css";
-import {ReactComponent as NavIcon} from "../../assets/patrol.svg";
-import {ReactComponent as RefreshIcon} from "../../assets/refresh.svg";
+import NavIcon from "../../assets/patrol.svg";
+import RefreshIcon from "../../assets/refresh.svg";
 import Button from "../Button";
 import styled, {keyframes, css} from "styled-components";
 import PropTypes from "prop-types";

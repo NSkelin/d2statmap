@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 import styles from "./HeatMap.module.css";
 import NoUiSlider from "../NoUiSlider";
 import StatBar from "../StatBar";
-import {ReactComponent as MobilityIcon} from "../../assets/mobility.svg";
-import {ReactComponent as ResilienceIcon} from "../../assets/resilience.svg";
-import {ReactComponent as RecoveryIcon} from "../../assets/recovery.svg";
-import {ReactComponent as DisciplineIcon} from "../../assets/discipline.svg";
-import {ReactComponent as IntellectIcon} from "../../assets/intellect.svg";
-import {ReactComponent as StrengthIcon} from "../../assets/strength.svg";
+import MobilityIcon from "../../assets/mobility.svg";
+import ResilienceIcon from "../../assets/resilience.svg";
+import RecoveryIcon from "../../assets/recovery.svg";
+import DisciplineIcon from "../../assets/discipline.svg";
+import IntellectIcon from "../../assets/intellect.svg";
+import StrengthIcon from "../../assets/strength.svg";
 
 function HeatMap({slider, smoothing, armor}) {
 	const [sliderValues, setSliderValues] = useState({min: slider.minRange, max: slider.maxRange});
