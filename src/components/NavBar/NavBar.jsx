@@ -19,6 +19,8 @@ const RefreshButton = styled.button`
 	padding: 0;
 	border: none;
 	background: none;
+	height: 40px;
+	width: 40px;
 	animation: ${(props) =>
 		props.shouldRotate
 			? css`
