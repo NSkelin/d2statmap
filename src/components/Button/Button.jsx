@@ -8,7 +8,7 @@ const StyledButton = styled.button`
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
-	padding: 10px;
+	padding: ${(props) => (props.size ? props.size * 5 + "px " + props.size * 10 + "px" : "10px")};
 	color: white;
 	align-items: center;
 	flex: ${(props) => (props.stretch ? 1 : 0)};
@@ -32,11 +32,11 @@ const StyledButton = styled.button`
 	}
 `;
 
-function Button({name, stretch, onClick, selected, children}) {
+function Button({name, stretch, onClick, selected, children, size}) {
 	const style = selected ? "selected" : null;
 
 	return (
-		<StyledButton name={name} onClick={onClick} className={style} stretch={stretch}>
+		<StyledButton name={name} onClick={onClick} className={style} stretch={stretch} size={size}>
 			{children}
 		</StyledButton>
 	);
@@ -53,6 +53,7 @@ Button.propTypes = {
 	selected: PropTypes.bool,
 	name: PropTypes.string,
 	children: PropTypes.any,
+	size: PropTypes.number,
 };
 
 export default Button;
