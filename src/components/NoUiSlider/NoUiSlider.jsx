@@ -18,7 +18,7 @@ function NoUiSlider({minRange, maxRange, minVal, maxVal, onChange}) {
 		});
 		slider.on("update", onChange);
 		return () => {
-			divRef.current.noUiSlider.destroy();
+			if (divRef.current != null) divRef.current.noUiSlider.destroy();
 		};
 	}, [minRange, maxRange]);
 
