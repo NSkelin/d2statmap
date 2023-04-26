@@ -1,4 +1,3 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
 	reactStrictMode: true,
 
@@ -30,6 +29,23 @@ const nextConfig = {
 
 	compiler: {
 		styledComponents: true,
+	},
+
+	async redirects() {
+		return [
+			{
+				source: "/",
+				missing: [
+					{
+						type: "cookie",
+						key: "auth",
+						value: "true",
+					},
+				],
+				destination: "/authenticate",
+				permanent: false,
+			},
+		];
 	},
 };
 

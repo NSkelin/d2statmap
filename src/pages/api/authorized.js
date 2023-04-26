@@ -1,13 +1,13 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 import jwt from "jsonwebtoken";
-import {getCookie} from "cookies-next";
+import {getCookie, setCookie} from "cookies-next";
 
 export default function authorized(req, res) {
 	// get state from the jwt inside the cookie
 	const cookie = getCookie("state", {req, res});
 	if (cookie === undefined) {
-		res.redirect("/");
+		res.redirect("/authenticate");
 		return;
 	}
 
@@ -15,6 +15,14 @@ export default function authorized(req, res) {
 
 	if (req.query.state === state) {
 		// send code to api // req.query.code
+		setCookie("auth", true, {
+			req,
+			res,
+			httpOnly: true,
+			maxAge: 604800,
+			sameSite: "strict",
+			// secure: true -------------------------> enable when live
+		});
 		res.redirect("/");
 	} else res.status(403).send("failed to authenticate.");
 }
