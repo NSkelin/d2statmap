@@ -24,5 +24,5 @@ export default async function getAuthURL(req, res) {
 	});
 
 	// return auth url so the user can navigate there.
-	res.json({url: `https://www.bungie.net/en/OAuth/Authorize?client_id=${process.env.CLIENT_ID}&response_type=code&state=${state}`});
+	res.redirect(`https://www.bungie.net/en/OAuth/Authorize?client_id=${process.env.CLIENT_ID}&response_type=code&state=${state}`);
 }
