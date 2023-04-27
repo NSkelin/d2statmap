@@ -45,6 +45,18 @@ const nextConfig = {
 				destination: "/authenticate",
 				permanent: false,
 			},
+			{
+				source: "/authenticate",
+				has: [
+					{
+						type: "cookie",
+						key: "auth",
+						value: "true",
+					},
+				],
+				destination: "/",
+				permanent: false,
+			},
 		];
 	},
 };
