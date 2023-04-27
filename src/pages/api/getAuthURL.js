@@ -5,6 +5,12 @@ import jwt from "jsonwebtoken";
 import {setCookie} from "cookies-next";
 
 export default async function getAuthURL(req, res) {
+	if (req.method != "POST") {
+		res.setHeader("Allow", "POST");
+		res.status(405).send();
+		return;
+	}
+
 	const state = nanoid();
 	const token = jwt.sign(state, process.env.SECRET);
 
