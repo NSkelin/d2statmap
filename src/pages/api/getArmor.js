@@ -7,5 +7,5 @@ export default function getArmor(req, res) {
 		return;
 	}
 
-	res.send(dummyArmorData);
+	res.status(200).send(dummyArmorData);
 }
