@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 import jwt from "jsonwebtoken";
-import {getCookie, setCookie} from "cookies-next";
+import {getCookie, setCookie, deleteCookie} from "cookies-next";
 
 export default function authorized(req, res) {
 	// get state from the jwt inside the cookie
@@ -14,6 +14,7 @@ export default function authorized(req, res) {
 	const state = jwt.verify(cookie, process.env.SECRET);
 
 	if (req.query.state === state) {
+		deleteCookie("state", {req, res});
 		// send code to api // req.query.code
 		setCookie("auth", true, {
 			req,
