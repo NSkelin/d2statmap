@@ -4,12 +4,12 @@ import styles from "./Menu.module.css";
 
 function Menu({title, titleBG, bodyBG, children}) {
 	return (
-		<div className={styles.content} style={{backgroundColor: titleBG}}>
+		<section className={styles.content} style={{backgroundColor: titleBG}}>
 			<h1 className={styles.header}>{title}</h1>
 			<div className={styles.body} style={{backgroundColor: bodyBG}}>
 				{children}
 			</div>
-		</div>
+		</section>
 	);
 }
 

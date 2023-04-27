@@ -44,13 +44,15 @@ function NavBar({loggedIn, rotate, onLogout, onRefresh}) {
 	};
 
 	return (
-		<div className={styles.navBar}>
+		<header className={styles.navBar}>
 			<div className={styles.left}>
 				<NavIcon className={styles.navIcon}></NavIcon>
-				<b>D2StatMap</b>
+				<h1>
+					<b>D2StatMap</b>
+				</h1>
 			</div>
-			<div className={styles.right}>{right()}</div>
-		</div>
+			<nav className={styles.right}>{right()}</nav>
+		</header>
 	);
 }
 

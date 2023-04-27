@@ -53,7 +53,7 @@ function StatMap({armorData, minRange, maxRange}) {
 	);
 
 	return (
-		<div className={styles.center}>
+		<main className={styles.center}>
 			<Menu title="Stat map" titleBG="#282828" bodyBG="#383838">
 				<Title title="Class selection">
 					<SelectOneButton
@@ -96,7 +96,7 @@ function StatMap({armorData, minRange, maxRange}) {
 				<CheckBox onChange={handleOptionChange} name={"assumeMasterwork"} title={"Assume masterwork"}></CheckBox>
 				<CheckBox onChange={handleOptionChange} name={"smoothing"} title={"Heatbar smoothing"}></CheckBox>
 			</Menu>
-		</div>
+		</main>
 	);
 }
 
