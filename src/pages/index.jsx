@@ -2,8 +2,10 @@ import React, {useState} from "react";
 import {NavBar, StatMap} from "../components";
 import styles from "../app.module.css";
 import dummyData from "../../dummyData.json";
+import {useRouter} from "next/router";
 
 function App() {
+	const router = useRouter();
 	const [refreshing, setRefreshing] = useState(false);
 
 	function handleRefresh() {
@@ -13,7 +15,18 @@ function App() {
 		}, 2000);
 	}
 
-	function handleLogout() {}
+	async function handleLogout() {
+		try {
+			const res = await fetch("http://localhost:3000/api/logOut", {
+				method: "POST",
+			});
+			if (res.status === 200) {
+				router.push("/authenticate");
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
 
 	return (
 		<div className={styles.app}>
