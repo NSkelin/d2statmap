@@ -17,7 +17,7 @@ function App() {
 
 	return (
 		<div className={styles.app}>
-			<NavBar rotate={refreshing} onLogout={handleLogout} onRefresh={handleRefresh}></NavBar>
+			<NavBar loggedIn rotate={refreshing} onLogout={handleLogout} onRefresh={handleRefresh}></NavBar>
 			<div className={styles.content}>
 				<StatMap armorData={dummyData} minRange={2} maxRange={32}></StatMap>
 			</div>

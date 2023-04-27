@@ -29,19 +29,27 @@ const RefreshButton = styled.button`
 			: "none"};
 `;
 
-function NavBar({rotate, onLogout, onRefresh}) {
+function NavBar({loggedIn, rotate, onLogout, onRefresh}) {
+	const right = () => {
+		if (loggedIn)
+			return (
+				<>
+					<Button onClick={onLogout}>Logout</Button>
+					<RefreshButton onClick={onRefresh} shouldRotate={rotate}>
+						<RefreshIcon className={styles.refreshIcon}></RefreshIcon>
+					</RefreshButton>
+				</>
+			);
+		else return null;
+	};
+
 	return (
 		<div className={styles.navBar}>
 			<div className={styles.left}>
 				<NavIcon className={styles.navIcon}></NavIcon>
 				<b>D2StatMap</b>
 			</div>
-			<div className={styles.right}>
-				<Button onClick={onLogout}>Logout</Button>
-				<RefreshButton onClick={onRefresh} shouldRotate={rotate}>
-					<RefreshIcon className={styles.refreshIcon}></RefreshIcon>
-				</RefreshButton>
-			</div>
+			<div className={styles.right}>{right()}</div>
 		</div>
 	);
 }
@@ -51,6 +59,7 @@ NavBar.defaultProps = {
 };
 
 NavBar.propTypes = {
+	loggedIn: PropTypes.bool,
 	rotate: PropTypes.bool,
 	onLogout: PropTypes.func,
 	onRefresh: PropTypes.func,
