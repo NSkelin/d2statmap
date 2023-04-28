@@ -6,6 +6,10 @@ export default function getArmor(req, res) {
 		res.status(405).send();
 		return;
 	}
-
-	res.status(200).send(dummyArmorData);
+	return new Promise((resolve) => {
+		setTimeout(() => {
+			res.status(200).json(dummyArmorData);
+			resolve();
+		}, 3000);
+	});
 }
