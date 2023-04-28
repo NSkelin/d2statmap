@@ -22,7 +22,7 @@ export default function authorized(req, res) {
 			res,
 			httpOnly: true,
 			maxAge: 604800,
-			sameSite: "strict",
+			sameSite: "lax",
 			// secure: true -------------------------> enable when live
 		});
 		res.status(307).redirect("/");
