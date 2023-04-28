@@ -18,7 +18,7 @@ function App() {
 
 	async function handleLogout() {
 		try {
-			const res = await fetch("http://localhost:3000/api/logOut", {
+			const res = await fetch("/api/logOut", {
 				method: "POST",
 			});
 			if (res.status === 200) {
