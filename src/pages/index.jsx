@@ -3,9 +3,11 @@ import {NavBar, StatMap} from "../components";
 import styles from "../app.module.css";
 import Head from "next/head";
 import {TailSpin} from "react-loader-spinner";
+import {useRouter} from "next/router";
 import useArmor from "../customHooks/useArmor";
 
 function App() {
+	const router = useRouter();
 	const [refreshing, setRefreshing] = useState(false);
 
 	const {armorData, isLoading, error, isValidating} = useArmor();
