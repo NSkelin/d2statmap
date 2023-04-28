@@ -13,11 +13,13 @@ import ChestIcon from "../../assets/chest.svg";
 import BootsIcon from "../../assets/boots.svg";
 import ClassIcon from "../../assets/helmet.svg";
 import IconCount from "../IconCount";
+import useArmor from "../../customHooks/useArmor";
 
-function StatMap({armorData, minRange, maxRange}) {
+function StatMap({minRange, maxRange}) {
 	const [selectedClass, setSelectedClass] = useState("Hunter");
 	const [selectedArmorTypes, setSelectedArmorTypes] = useState({helmet: true, gloves: true, chest: true, boots: true, classItem: true});
 	const [options, setOptions] = useState({assumeMasterwork: false, simpleArmor: false, smoothing: false});
+	const {armorData, loading, error} = useArmor();
 
 	function handleClassSelect(buttonText) {
 		setSelectedClass(buttonText);
@@ -51,6 +53,9 @@ function StatMap({armorData, minRange, maxRange}) {
 		maxRange,
 		armorCount[selectedClass].total
 	);
+
+	if (loading) return <></>;
+	else if (error) return <p>Error occurred.</p>;
 
 	return (
 		<main className={styles.center}>
@@ -212,15 +217,6 @@ function normalizeStats(stats, minRange, maxRange, normalizeCount) {
 }
 
 StatMap.propTypes = {
-	armorData: PropTypes.arrayOf(
-		PropTypes.shape({
-			class: PropTypes.number,
-			masterwork: PropTypes.bool,
-			stats: PropTypes.arrayOf(PropTypes.number),
-			// eslint-disable-next-line camelcase
-			armor_type: PropTypes.number,
-		})
-	),
 	minRange: PropTypes.number,
 	maxRange: PropTypes.number,
 };
