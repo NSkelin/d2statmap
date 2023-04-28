@@ -7,7 +7,7 @@ export default function authorized(req, res) {
 	// get state from the jwt inside the cookie
 	const cookie = getCookie("state", {req, res});
 	if (cookie === undefined) {
-		res.redirect("/authenticate");
+		res.status(307).redirect("/authenticate");
 		return;
 	}
 
@@ -24,6 +24,6 @@ export default function authorized(req, res) {
 			sameSite: "strict",
 			// secure: true -------------------------> enable when live
 		});
-		res.redirect("/");
+		res.status(307).redirect("/");
 	} else res.status(403).send("failed to authenticate.");
 }
