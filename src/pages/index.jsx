@@ -9,7 +9,7 @@ import useArmor from "../customHooks/useArmor";
 function App() {
 	const router = useRouter();
 
-	const {armorData, isLoading, error, isValidating} = useArmor();
+	const {isLoading, error} = useArmor();
 
 	async function handleLogout() {
 		try {
@@ -25,6 +25,8 @@ function App() {
 	}
 
 	let appContent;
+
+	if (error) return <p>Error.</p>;
 
 	if (isLoading)
 		appContent = (
