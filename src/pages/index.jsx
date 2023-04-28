@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {NavBar, StatMap} from "../components";
 import styles from "../app.module.css";
 import Head from "next/head";
@@ -8,16 +8,8 @@ import useArmor from "../customHooks/useArmor";
 
 function App() {
 	const router = useRouter();
-	const [refreshing, setRefreshing] = useState(false);
 
 	const {armorData, isLoading, error, isValidating} = useArmor();
-
-	function handleRefresh() {
-		setRefreshing(true);
-		setTimeout(() => {
-			setRefreshing(false);
-		}, 2000);
-	}
 
 	async function handleLogout() {
 		try {
@@ -51,7 +43,7 @@ function App() {
 				<meta name="keywords" content="Destiny 2, D2, Armor, Stat map" />
 			</Head>
 			<div className={styles.app}>
-				<NavBar loggedIn rotate={refreshing} onLogout={handleLogout} onRefresh={handleRefresh}></NavBar>
+				<NavBar loggedIn onLogout={handleLogout}></NavBar>
 				<div className={styles.content}>{appContent}</div>
 			</div>
 		</>
