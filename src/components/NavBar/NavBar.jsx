@@ -6,6 +6,7 @@ import Button from "../Button";
 import styled, {keyframes, css} from "styled-components";
 import PropTypes from "prop-types";
 import useArmor from "../../customHooks/useArmor";
+import {useSWRConfig} from "swr";
 
 const spinAnimation = keyframes`
 	from {
@@ -31,9 +32,12 @@ const RefreshButton = styled.button`
 `;
 
 function NavBar({loggedIn, onLogout}) {
+	const {mutate} = useSWRConfig();
 	const {isValidating} = useArmor();
 
-	function handleRefresh() {}
+	function handleRefresh() {
+		if (!isValidating) mutate("/api/getArmor");
+	}
 
 	const right = () => {
 		if (loggedIn)
