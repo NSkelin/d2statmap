@@ -27,4 +27,5 @@
 .refreshIcon {
     fill: white;
     display: block;
+    cursor: pointer;
 }
