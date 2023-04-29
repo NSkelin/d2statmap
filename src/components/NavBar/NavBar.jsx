@@ -5,6 +5,7 @@ import RefreshIcon from "../../assets/refresh.svg";
 import Button from "../Button";
 import styled, {keyframes, css} from "styled-components";
 import PropTypes from "prop-types";
+import useArmor from "../../customHooks/useArmor";
 
 const spinAnimation = keyframes`
 	from {
@@ -29,13 +30,17 @@ const RefreshButton = styled.button`
 			: "none"};
 `;
 
-function NavBar({loggedIn, rotate, onLogout, onRefresh}) {
+function NavBar({loggedIn, onLogout}) {
+	const {isValidating} = useArmor();
+
+	function handleRefresh() {}
+
 	const right = () => {
 		if (loggedIn)
 			return (
 				<>
 					<Button onClick={onLogout}>Logout</Button>
-					<RefreshButton onClick={onRefresh} shouldRotate={rotate}>
+					<RefreshButton onClick={handleRefresh} shouldRotate={isValidating}>
 						<RefreshIcon className={styles.refreshIcon}></RefreshIcon>
 					</RefreshButton>
 				</>
@@ -62,9 +67,7 @@ NavBar.defaultProps = {
 
 NavBar.propTypes = {
 	loggedIn: PropTypes.bool,
-	rotate: PropTypes.bool,
 	onLogout: PropTypes.func,
-	onRefresh: PropTypes.func,
 };
 
 export default NavBar;
