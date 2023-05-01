@@ -15,3 +15,10 @@
     align-items: center;
     gap: 50px;
 }
+.report {
+    position: absolute;
+    right: 50px;
+    bottom: 50px;
+    color: white;
+    text-decoration: none;
+}

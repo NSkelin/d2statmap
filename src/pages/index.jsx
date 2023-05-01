@@ -47,6 +47,9 @@ function App() {
 			<div className={styles.app}>
 				<NavBar loggedIn onLogout={handleLogout}></NavBar>
 				<div className={styles.content}>{appContent}</div>
+				<a href="https://github.com/NSkelin/d2statmap/issues" rel="noopener noreferrer" target="_blank" className={styles.report}>
+					Report an issue
+				</a>
 			</div>
 		</>
 	);
