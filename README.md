@@ -15,7 +15,7 @@ and all the armor you have for that class.
 The goal of this app is to allow players (you) to tell at a glance which stats your current armor is lacking in. You then know what armor to prioritize.
 
 # Table of contents
-![Screenshot 2023-05-01 143647](https://user-images.githubusercontent.com/31994545/235536250-7227720a-bc4c-4d21-b4ca-bc9b9f5a8b5f.png)
+![image](https://user-images.githubusercontent.com/31994545/235538164-e8b64496-e511-4e93-be35-aa3eda61e7b7.png)
 
 # Features
 ## Heatmap
