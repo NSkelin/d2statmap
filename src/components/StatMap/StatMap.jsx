@@ -18,7 +18,7 @@ import useArmor from "../../customHooks/useArmor";
 function StatMap({minRange, maxRange}) {
 	const [selectedClass, setSelectedClass] = useState("Hunter");
 	const [selectedArmorTypes, setSelectedArmorTypes] = useState({helmet: true, gloves: true, chest: true, boots: true, classItem: true});
-	const [options, setOptions] = useState({assumeMasterwork: false, simpleArmor: false, smoothing: false});
+	const [options, setOptions] = useState({assumeMasterwork: false, smoothing: false});
 	const {armorData, loading, error} = useArmor();
 
 	function handleClassSelect(buttonText) {
@@ -89,12 +89,7 @@ function StatMap({minRange, maxRange}) {
 					</Button>
 				</Title>
 				<Title title="HeatMap">
-					<HeatMap
-						assumeMasterwork={options.assumeMasterwork}
-						armor={normalizedStats}
-						smoothing={options.smoothing}
-						slider={{minRange, maxRange}}
-					></HeatMap>
+					<HeatMap armor={normalizedStats} smoothing={options.smoothing} slider={{minRange, maxRange}}></HeatMap>
 				</Title>
 			</Menu>
 			<Menu title="Options" titleBG="#232323" bodyBG="#323232">
