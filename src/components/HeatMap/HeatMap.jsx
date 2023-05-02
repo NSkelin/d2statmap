@@ -9,9 +9,11 @@ import RecoveryIcon from "../../assets/recovery.svg";
 import DisciplineIcon from "../../assets/discipline.svg";
 import IntellectIcon from "../../assets/intellect.svg";
 import StrengthIcon from "../../assets/strength.svg";
+import useCheckbox from "../../customHooks/useCheckbox";
 
-function HeatMap({slider, smoothing, armor}) {
+function HeatMap({slider, armor}) {
 	const [sliderValues, setSliderValues] = useState({min: slider.minRange, max: slider.maxRange});
+	const {checked: smoothing} = useCheckbox("smoothing");
 
 	function handleSliderChange(values) {
 		setSliderValues({min: Number(values[0]), max: Number(values[1])});

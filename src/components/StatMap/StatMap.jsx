@@ -14,12 +14,13 @@ import BootsIcon from "../../assets/boots.svg";
 import ClassIcon from "../../assets/helmet.svg";
 import IconCount from "../IconCount";
 import useArmor from "../../customHooks/useArmor";
+import useCheckbox from "../../customHooks/useCheckbox";
 
 function StatMap({minRange, maxRange}) {
 	const [selectedClass, setSelectedClass] = useState("Hunter");
 	const [selectedArmorTypes, setSelectedArmorTypes] = useState({helmet: true, gloves: true, chest: true, boots: true, classItem: true});
-	const [options, setOptions] = useState({assumeMasterwork: false, smoothing: false});
 	const {armorData, loading, error} = useArmor();
+	const {checked: assumeMasterwork} = useCheckbox("assumeMasterwork");
 
 	function handleClassSelect(buttonText) {
 		setSelectedClass(buttonText);
@@ -34,21 +35,12 @@ function StatMap({minRange, maxRange}) {
 		});
 	}
 
-	function handleOptionChange(e) {
-		let name = e.currentTarget.name;
-		let value = options[name] ? false : true;
-		setOptions({
-			...options,
-			[name]: value,
-		});
-	}
-
 	const armorCount = countArmor(armorData);
 	const normalizedStats = parseArmor(
 		armorData,
 		selectedClass,
 		selectedArmorTypes,
-		options.assumeMasterwork,
+		assumeMasterwork,
 		minRange,
 		maxRange,
 		armorCount[selectedClass].total
@@ -89,12 +81,12 @@ function StatMap({minRange, maxRange}) {
 					</Button>
 				</Title>
 				<Title title="HeatMap">
-					<HeatMap armor={normalizedStats} smoothing={options.smoothing} slider={{minRange, maxRange}}></HeatMap>
+					<HeatMap armor={normalizedStats} slider={{minRange, maxRange}}></HeatMap>
 				</Title>
 			</Menu>
 			<Menu title="Options" titleBG="#232323" bodyBG="#323232">
-				<CheckBox onChange={handleOptionChange} name={"assumeMasterwork"} title={"Assume masterwork"}></CheckBox>
-				<CheckBox onChange={handleOptionChange} name={"smoothing"} title={"Heatbar smoothing"}></CheckBox>
+				<CheckBox uniqueID={"assumeMasterwork"} name={"assumeMasterwork"} title={"Assume masterwork"}></CheckBox>
+				<CheckBox uniqueID={"smoothing"} name={"smoothing"} title={"Heatbar smoothing"}></CheckBox>
 			</Menu>
 		</main>
 	);
