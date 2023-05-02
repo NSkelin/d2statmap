@@ -5,11 +5,12 @@ import Head from "next/head";
 import {TailSpin} from "react-loader-spinner";
 import {useRouter} from "next/router";
 import useArmor from "../customHooks/useArmor";
+import PropTypes from "prop-types";
 
-function App() {
+function App({dummyData}) {
 	const router = useRouter();
 
-	const {isLoading, error} = useArmor();
+	const {isLoading, error} = useArmor(dummyData);
 
 	async function handleLogout() {
 		try {
@@ -54,5 +55,13 @@ function App() {
 		</>
 	);
 }
+
+App.defaultProps = {
+	dummyData: false,
+};
+
+App.propTypes = {
+	dummyData: PropTypes.bool,
+};
 
 export default App;
