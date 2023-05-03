@@ -6,7 +6,7 @@ import Link from "next/link";
 function Demo() {
 	return (
 		<>
-			<App dummyData={true} />
+			<App demo={true} />
 			<div className={styles.wrapper}>
 				<span className={styles.warning}>
 					<span style={{color: "red"}}>Warning!</span> This is an example page. Click &nbsp;
