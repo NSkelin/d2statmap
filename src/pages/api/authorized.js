@@ -23,7 +23,7 @@ export default function authorized(req, res) {
 			httpOnly: true,
 			maxAge: 604800,
 			sameSite: "lax",
-			// secure: true -------------------------> enable when live
+			secure: true,
 		});
 		res.status(307).redirect("/");
 	} else res.status(403).send("failed to authenticate.");

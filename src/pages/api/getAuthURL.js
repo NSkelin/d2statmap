@@ -20,7 +20,7 @@ export default async function getAuthURL(req, res) {
 		httpOnly: true,
 		maxAge: 604800,
 		sameSite: "lax",
-		// secure: true -------------------------> enable when live
+		secure: true,
 	});
 
 	// return auth url so the user can navigate there.
