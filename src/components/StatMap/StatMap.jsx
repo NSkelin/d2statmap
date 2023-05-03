@@ -16,10 +16,10 @@ import IconCount from "../IconCount";
 import useArmor from "../../customHooks/useArmor";
 import useCheckbox from "../../customHooks/useCheckbox";
 
-function StatMap({minRange, maxRange}) {
+function StatMap({minRange, maxRange, demo}) {
 	const [selectedClass, setSelectedClass] = useState("Hunter");
 	const [selectedArmorTypes, setSelectedArmorTypes] = useState({helmet: true, gloves: true, chest: true, boots: true, classItem: true});
-	const {armorData, loading, error} = useArmor();
+	const {armorData, loading, error} = useArmor(demo);
 	const {checked: assumeMasterwork} = useCheckbox("assumeMasterwork");
 
 	function handleClassSelect(buttonText) {
@@ -203,9 +203,14 @@ function normalizeStats(stats, minRange, maxRange, normalizeCount) {
 	return normalizedValues;
 }
 
+StatMap.defaultProps = {
+	demo: false,
+};
+
 StatMap.propTypes = {
 	minRange: PropTypes.number,
 	maxRange: PropTypes.number,
+	demo: PropTypes.bool,
 };
 
 export default StatMap;

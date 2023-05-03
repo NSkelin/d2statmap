@@ -5,11 +5,12 @@ import Head from "next/head";
 import {TailSpin} from "react-loader-spinner";
 import {useRouter} from "next/router";
 import useArmor from "../customHooks/useArmor";
+import PropTypes from "prop-types";
 
-function App() {
+function App({demo}) {
 	const router = useRouter();
 
-	const {isLoading, error} = useArmor();
+	const {isLoading, error} = useArmor(demo);
 
 	async function handleLogout() {
 		try {
@@ -34,7 +35,7 @@ function App() {
 				<TailSpin height="150" width="150" color="#a0c0bc" ariaLabel="tail-spin-loading" radius="1" /> <h2>Retrieving armor...</h2>
 			</div>
 		);
-	else appContent = <StatMap minRange={2} maxRange={32}></StatMap>;
+	else appContent = <StatMap minRange={2} maxRange={32} demo={demo}></StatMap>;
 
 	return (
 		<>
@@ -54,5 +55,13 @@ function App() {
 		</>
 	);
 }
+
+App.defaultProps = {
+	demo: false,
+};
+
+App.propTypes = {
+	demo: PropTypes.bool,
+};
 
 export default App;
