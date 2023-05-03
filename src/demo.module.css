@@ -1,0 +1,19 @@
+.wrapper {
+    position: absolute;
+    bottom: 0px;
+    height: 70px;
+    width: 100%;
+    background-color: rgb(32, 32, 32);
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+}
+.warning {
+    padding-left: 100px;
+}
+.link {
+    color: wheat;
+}
+.link:hover {
+    color: aliceblue;
+}
