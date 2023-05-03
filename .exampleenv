@@ -1,6 +1,5 @@
-# required
+# Bungie app id
 CLIENT_ID=
-PORT=
 
-# dev only parameters - optional
-DEV_HTTPS_PORT=
+# jwt sign secret
+SECRET=
