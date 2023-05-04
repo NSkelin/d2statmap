@@ -4,7 +4,7 @@ d2Statmap is a third party webapp for the videogame Destiny 2.
 [View it live](). (coming soon)
 
 Dont have a bungie account?<br>
-[View the demo](). (coming soon)
+[View the demo](https://d2statmap-kf4fa1h3x-nskelin.vercel.app/).
 
 ![image](https://user-images.githubusercontent.com/31994545/235534017-f1c0b0af-fb71-4cb4-bf03-d50ed2e327a4.png)
 
@@ -50,7 +50,7 @@ When checked, this setting will make the [Heatmap](#Heatmap) gradient smooth, in
 The app keeps up to date with destiny as you play it. The app will periodically search for any new armor you acquired to keep up to date.
 
 ## Demo
-[Demo link]() (coming soon)
+[Demo link](https://d2statmap-kf4fa1h3x-nskelin.vercel.app/)
 
 This demo link lets you view the site without requiring a bungie account. It will provide dummy data in place of retrieving data from the
 bungie api so you can play around with it.
