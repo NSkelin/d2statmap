@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
 function App({demo}) {
 	const router = useRouter();
 
-	const {isLoading, error} = useArmor(demo);
+	const {isLoading, error} = useArmor(demo ? "demo" : null);
 
 	async function handleLogout() {
 		try {

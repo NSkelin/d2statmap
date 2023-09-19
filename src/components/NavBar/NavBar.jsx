@@ -33,7 +33,8 @@ const RefreshButton = styled.button`
 
 function NavBar({loggedIn, onLogout}) {
 	const {mutate} = useSWRConfig();
-	const {isValidating} = useArmor();
+	const mode = loggedIn ? null : "none";
+	const {isValidating} = useArmor(mode);
 
 	function handleRefresh() {
 		if (!isValidating) mutate("/api/getArmor");
