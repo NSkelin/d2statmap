@@ -39,7 +39,6 @@ const nextConfig = {
 					{
 						type: "cookie",
 						key: "auth",
-						value: "true",
 					},
 				],
 				destination: "/authenticate",
@@ -51,7 +50,6 @@ const nextConfig = {
 					{
 						type: "cookie",
 						key: "auth",
-						value: "true",
 					},
 				],
 				destination: "/",
