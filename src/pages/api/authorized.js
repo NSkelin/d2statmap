@@ -11,7 +11,7 @@ export default function authorized(req, res) {
 		return;
 	}
 
-	const state = jwt.verify(cookie, process.env.SECRET);
+	const state = jwt.verify(cookie, process.env.SIGN_SECRET);
 
 	// confirm the state is the same to prevent csrf
 	if (req.query.state === state) {

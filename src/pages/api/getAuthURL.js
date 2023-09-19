@@ -12,7 +12,7 @@ export default async function getAuthURL(req, res) {
 	}
 
 	const state = nanoid();
-	const token = jwt.sign(state, process.env.SECRET);
+	const token = jwt.sign(state, process.env.SIGN_SECRET);
 
 	setCookie("state", token, {
 		req,
