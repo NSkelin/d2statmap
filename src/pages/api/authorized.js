@@ -1,7 +1,5 @@
 import {deleteCookie, getCookie, setCookie} from "cookies-next";
-import * as dotenv from "dotenv";
 import jwt from "jsonwebtoken";
-dotenv.config();
 
 async function getAccessToken(code) {
 	const formData = new URLSearchParams();

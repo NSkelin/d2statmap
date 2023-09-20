@@ -1,8 +1,6 @@
 // this file will create a self signed SSL certificate and run a local HTTPS server using it.
 // it is meant to be used as a proxy server for testing the bungie api in a localhost dev environment
 // it will redirect from this server to localhost: redirectPort
-import * as dotenv from "dotenv";
-dotenv.config();
 
 // express
 import express from "express";

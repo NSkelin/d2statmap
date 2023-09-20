@@ -1,8 +1,6 @@
-import * as dotenv from "dotenv";
-dotenv.config();
-import {nanoid} from "nanoid";
-import jwt from "jsonwebtoken";
 import {setCookie} from "cookies-next";
+import jwt from "jsonwebtoken";
+import {nanoid} from "nanoid";
 
 export default async function getAuthURL(req, res) {
 	if (req.method != "POST") {
