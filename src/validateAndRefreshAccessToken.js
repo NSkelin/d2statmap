@@ -48,7 +48,7 @@ export default async function validateAndRefreshAccessToken(req, res, handler) {
 	const cookie = getCookie("auth", {req, res});
 	// check if auth cookie doesnt exist
 	if (cookie === undefined) {
-		res.status(307).redirect("/authenticate");
+		res.status(401).json("unauthorized");
 		return;
 	}
 
@@ -63,7 +63,7 @@ export default async function validateAndRefreshAccessToken(req, res, handler) {
 		if (auth.refreshTokenExpiresAt < now) {
 			deleteCookie("auth", {req, res});
 			// refresh token is expired, reauthenticate
-			res.status(307).redirect("/authenticate");
+			res.status(401).json("unauthorized");
 			return;
 		} else {
 			// refresh access token and update cookie
