@@ -8,5 +8,6 @@ export default function authorized(req, res) {
 	}
 
 	deleteCookie("auth", {req, res});
+	deleteCookie("membership", {req, res});
 	res.status(200).send();
 }
