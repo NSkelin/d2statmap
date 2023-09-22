@@ -43,6 +43,29 @@ async function refreshAccessToken(req, res, refreshToken) {
 	});
 }
 
+/** Updates the cookie holding the users selected membership to keep its expirey in sync with the authorization token.
+ *
+ * If the users auth expires, then the selected membership for that auth should also expire.
+ */
+async function updateMembershipMaxAge(req, res) {
+	const membership = getCookie("membership", req, res);
+	const authCookie = getCookie("auth", {req, res});
+
+	const authData = jwt.verify(authCookie, process.env.SIGN_SECRET);
+
+	const maxAge = authData.refreshTokenExpiresAt - Math.floor(Date.now() / 1000);
+
+	deleteCookie("membership", {req, res});
+	setCookie("membership", membership, {
+		req,
+		res,
+		httpOnly: true,
+		maxAge: maxAge,
+		sameSite: "strict",
+		secure: true,
+	});
+}
+
 /** Validates that the access token is still valid. If not it will attempt to refresh it with the refresh token. */
 export default async function validateAndRefreshAccessToken(req, res, handler) {
 	const cookie = getCookie("auth", {req, res});
@@ -68,6 +91,7 @@ export default async function validateAndRefreshAccessToken(req, res, handler) {
 		} else {
 			// refresh access token and update cookie
 			await refreshAccessToken(req, res, auth.refreshToken);
+			await updateMembershipMaxAge(req, res);
 			await handler(req, res);
 			return;
 		}
