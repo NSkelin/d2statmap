@@ -18,6 +18,8 @@ export default function useArmor(mode) {
 
 	if (error && error.status === 401) {
 		window.location.href = "/authenticate";
+	} else if (error && error.status === 40) {
+		window.location.href = "/accountSelection";
 	}
 
 	return {

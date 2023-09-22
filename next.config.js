@@ -33,6 +33,7 @@ const nextConfig = {
 
 	async redirects() {
 		return [
+			// not authenticated
 			{
 				source: "/",
 				missing: [
@@ -45,11 +46,77 @@ const nextConfig = {
 				permanent: false,
 			},
 			{
+				source: "/accountSelection",
+				missing: [
+					{
+						type: "cookie",
+						key: "auth",
+					},
+				],
+				destination: "/authenticate",
+				permanent: false,
+			},
+			// hasent selected an account
+			{
+				source: "/",
+				has: [
+					{
+						type: "cookie",
+						key: "auth",
+					},
+				],
+				missing: [
+					{
+						type: "cookie",
+						key: "membership",
+					},
+				],
+				destination: "/accountSelection",
+				permanent: false,
+			},
+			{
 				source: "/authenticate",
 				has: [
 					{
 						type: "cookie",
 						key: "auth",
+					},
+				],
+				missing: [
+					{
+						type: "cookie",
+						key: "membership",
+					},
+				],
+				destination: "/accountSelection",
+				permanent: false,
+			},
+			// authenticated and selected an account
+			{
+				source: "/authenticate",
+				has: [
+					{
+						type: "cookie",
+						key: "auth",
+					},
+					{
+						type: "cookie",
+						key: "membership",
+					},
+				],
+				destination: "/",
+				permanent: false,
+			},
+			{
+				source: "/accountSelection",
+				has: [
+					{
+						type: "cookie",
+						key: "auth",
+					},
+					{
+						type: "cookie",
+						key: "membership",
 					},
 				],
 				destination: "/",
