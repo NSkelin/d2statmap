@@ -51,6 +51,6 @@ export default async function authorized(req, res) {
 			sameSite: "strict",
 			secure: true,
 		});
-		res.status(307).redirect("/");
+		res.status(307).redirect("/accountSelection");
 	} else res.status(403).send("failed to authenticate.");
 }
