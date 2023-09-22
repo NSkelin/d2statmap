@@ -48,7 +48,7 @@ export default async function authorized(req, res) {
 			res,
 			httpOnly: true,
 			maxAge: 7776000,
-			sameSite: "lax",
+			sameSite: "strict",
 			secure: true,
 		});
 		res.status(307).redirect("/");

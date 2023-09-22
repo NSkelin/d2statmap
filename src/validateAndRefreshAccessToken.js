@@ -38,7 +38,7 @@ async function refreshAccessToken(req, res, refreshToken) {
 		res,
 		httpOnly: true,
 		maxAge: 7776000,
-		sameSite: "lax",
+		sameSite: "strict",
 		secure: true,
 	});
 }
