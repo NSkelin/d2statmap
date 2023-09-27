@@ -1,4 +1,13 @@
 import dummyArmorData from "../../../dummyData.json" assert {type: "json"};
+
+async function getManifest() {
+	const response = await fetch("https://www.bungie.net/Platform/Destiny2/Manifest/", {
+		method: "GET",
+	});
+	const data = await response.json();
+	return data;
+}
+
 async function getArmor(req, res) {
 	return new Promise((resolve) => {
 		setTimeout(() => {
