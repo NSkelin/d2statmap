@@ -1,4 +1,5 @@
 import dummyArmorData from "../../../dummyData.json" assert {type: "json"};
+import validateAndRefreshAccessToken from "../../validateAndRefreshAccessToken";
 
 async function getManifest() {
 	const response = await fetch("https://www.bungie.net/Platform/Destiny2/Manifest/", {
