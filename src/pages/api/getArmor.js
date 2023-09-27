@@ -54,6 +54,22 @@ async function getInvItemDefinitions() {
 	return data;
 }
 
+async function getPlayerInventoryItems(membershipType, destinyMembershipId, accessToken) {
+	const components = "102,201,205,304";
+	const url = `https://www.bungie.net/Platform/Destiny2/${membershipType}/Profile/${destinyMembershipId}/?components=${components}`;
+
+	const response = await fetch(url, {
+		method: "GET",
+		headers: {
+			"X-API-KEY": process.env.CLIENT_API_KEY,
+			"authorization": `bearer ${accessToken}`,
+		},
+	});
+
+	const data = await response.json();
+	return data;
+}
+
 async function getArmor(req, res) {
 	return new Promise((resolve) => {
 		setTimeout(() => {
