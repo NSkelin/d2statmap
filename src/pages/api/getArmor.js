@@ -8,6 +8,16 @@ async function getManifest() {
 	return data;
 }
 
+async function getInvItemDefinitions() {
+	const manifest = await getManifest();
+	const invURL = "https://www.bungie.net" + manifest.Response.jsonWorldComponentContentPaths.en.DestinyInventoryItemDefinition;
+	const response = await fetch(invURL, {
+		method: "GET",
+	});
+	const data = await response.json();
+	return data;
+}
+
 async function getArmor(req, res) {
 	return new Promise((resolve) => {
 		setTimeout(() => {
