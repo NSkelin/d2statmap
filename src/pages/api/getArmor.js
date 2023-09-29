@@ -1,7 +1,7 @@
 import dummyArmorData from "../../../dummyData.json" assert {type: "json"};
 import validateAndRefreshAccessToken from "../../validateAndRefreshAccessToken";
 
-const statHashs = {
+const statHashs = Object.freeze({
 	Accuracy: 1591432999,
 	AimAssist: 1345609583,
 	Airborne: 2714457168,
@@ -34,7 +34,7 @@ const statHashs = {
 	SwingSpeed: 2837207746,
 	Velocity: 2523465841,
 	Zoom: 3555269338,
-};
+});
 
 async function getManifest() {
 	const response = await fetch("https://www.bungie.net/Platform/Destiny2/Manifest/", {
