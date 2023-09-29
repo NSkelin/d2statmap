@@ -36,6 +36,19 @@ const statHashs = Object.freeze({
 	Zoom: 3555269338,
 });
 
+// definitions from manifest - common/destiny2_content/json/en/DestinyItemCategoryDefinition
+const DestinyItemCategoryDefinitionsEnum = Object.freeze({
+	Armor: 20,
+	Warlock: 21,
+	Titan: 22,
+	Hunter: 23,
+	Helmet: 45,
+	Arms: 46,
+	Chest: 47,
+	Legs: 48,
+	Class: 49,
+});
+
 async function getManifest() {
 	const response = await fetch("https://www.bungie.net/Platform/Destiny2/Manifest/", {
 		method: "GET",
@@ -55,18 +68,6 @@ async function getInvItemDefinitions() {
 }
 
 async function getD2ArmorDefinitions() {
-	const DestinyItemCategoryDefinitionsEnum = {
-		Armor: 20,
-		Warlock: 21,
-		Titan: 22,
-		Hunter: 23,
-		Helmet: 45,
-		Arms: 46,
-		Chest: 47,
-		Legs: 48,
-		Class: 49,
-	}; // definitions from manifest - common/destiny2_content/json/en/DestinyItemCategoryDefinition
-
 	const mapOfDestinyArmorItems = new Map();
 
 	const items = await getInvItemDefinitions();
