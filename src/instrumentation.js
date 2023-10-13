@@ -1,6 +1,10 @@
 var cron = require("node-cron");
 
-// definitions from manifest - common/destiny2_content/json/en/DestinyItemCategoryDefinition
+/** Bungie uses Destiny.Definitions.DestinyItemCategoryDefinition to categorize items.
+ * This enum / object contains the definitions used for armor with each value being the unique hash used by bungie.
+ *
+ * The definitions can be found by following the link inside the manifest at Response.jsonWorldComponentContentPaths.en.DestinyInventoryItemCategoryDefinition
+ */
 const DestinyItemCategoryDefinitionsEnum = Object.freeze({
 	Armor: 20,
 	Warlock: 21,
@@ -13,6 +17,7 @@ const DestinyItemCategoryDefinitionsEnum = Object.freeze({
 	Class: 49,
 });
 
+/** Gets the Destiny 2 manifest from bungies API. */
 async function getManifest() {
 	const response = await fetch("https://www.bungie.net/Platform/Destiny2/Manifest/", {
 		method: "GET",
@@ -21,6 +26,7 @@ async function getManifest() {
 	return data;
 }
 
+/** Gets the list of Destiny 2 inventory item definitions from the Bungie manifest. */
 async function getInvItemDefinitions() {
 	const manifest = await getManifest();
 	const invURL = "https://www.bungie.net" + manifest.Response.jsonWorldComponentContentPaths.en.DestinyInventoryItemDefinition;
@@ -31,11 +37,13 @@ async function getInvItemDefinitions() {
 	return data;
 }
 
+/** Searches through the Destiny 2 inventory item definitions for armor and returns that armor in a Map. */
 async function getD2ArmorDefinitions() {
 	const mapOfDestinyArmorItems = new Map();
 
 	const items = await getInvItemDefinitions();
 	for (const [key, value] of Object.entries(items)) {
+		// Skip armor marked as redacted by bungie because they cannot be viewed.
 		if (value.redacted === true) continue;
 		else if (value.itemCategoryHashes.includes(DestinyItemCategoryDefinitionsEnum.Armor)) {
 			mapOfDestinyArmorItems.set(key, value);
@@ -45,6 +53,7 @@ async function getD2ArmorDefinitions() {
 	return mapOfDestinyArmorItems;
 }
 
+/** Once called, this function will repeatedly fetch the Destiny 2 armor definitions from bungie every tuesday at 6pm PST. */
 function fetchDataOnSchedule() {
 	getD2ArmorDefinitions();
 
