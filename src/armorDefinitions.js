@@ -9,7 +9,7 @@ let fetchTask;
  *
  * The definitions can be found by following the link inside the manifest at Response.jsonWorldComponentContentPaths.en.DestinyInventoryItemCategoryDefinition
  */
-const DestinyItemCategoryDefinitionsEnum = Object.freeze({
+export const DestinyItemCategoryDefinitionsEnum = Object.freeze({
 	Armor: 20,
 	Warlock: 21,
 	Titan: 22,
