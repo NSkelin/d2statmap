@@ -1,4 +1,8 @@
-var cron = require("node-cron");
+const cron = require("node-cron");
+
+let armorDefinitions = new Map();
+// the node-cron task that updates the data each week.
+let fetchTask;
 
 /** Bungie uses Destiny.Definitions.DestinyItemCategoryDefinition to categorize items.
  * This enum / object contains the definitions used for armor with each value being the unique hash used by bungie.
@@ -54,23 +58,37 @@ async function getD2ArmorDefinitions() {
 }
 
 /** Once called, this function will repeatedly fetch the Destiny 2 armor definitions from bungie every tuesday at 6pm PST. */
-function fetchDataOnSchedule() {
-	getD2ArmorDefinitions();
+async function fetchDataOnSchedule() {
+	const armorDefinitions = await getD2ArmorDefinitions();
+	setArmorDefinitions(armorDefinitions);
 
 	// fetch at 18:00 each tuesday
-	cron.schedule("0 18 * * Tuesday", fetchDataOnSchedule, {
+	fetchTask = cron.schedule("0 18 * * Tuesday", fetchDataOnSchedule, {
 		scheduled: true,
 		timezone: "America/Los_Angeles",
 	});
 }
 
-/** Runs each runtime once at startup. */
-export async function register() {
-	if (process.env.NEXT_RUNTIME === "nodejs") {
-		fetchDataOnSchedule();
-	}
+/** Replaces the armorDefinitions Map with the given Map.
+ * @param {Map} newMap The Map to replace the current one with.
+ */
+function setArmorDefinitions(newMap) {
+	armorDefinitions = newMap;
+}
 
-	if (process.env.NEXT_RUNTIME === "edge") {
-		return;
+/** Returns the Map of armor definitions. */
+export function getArmorDefinitions() {
+	return armorDefinitions;
+}
+
+/** Starts the initial call to fetch the armor definitions and start the cron job to update them weekly.
+ *
+ * Should only be called once.*/
+export async function initializeData() {
+	if (fetchTask) {
+		console.warn("WARN: InitializeData() is being called twice!");
+		fetchTask.stop();
 	}
+	await fetchDataOnSchedule();
+	return getArmorDefinitions();
 }
