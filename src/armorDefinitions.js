@@ -1,4 +1,4 @@
-const cron = require("node-cron");
+import cron from "node-cron";
 
 let armorDefinitions = new Map();
 // the node-cron task that updates the data each week.
