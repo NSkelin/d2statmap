@@ -36,10 +36,22 @@ const statHashs = Object.freeze({
 	Zoom: 3555269338,
 });
 
+/** Gets a players entire inventory with each items stats, across all their characters and their vault.
+ *
+ * @param {number} membershipType The enum that represents the players membership type such as xbox, playstation, steam, etc.
+ * @param {string} destinyMembershipId The players unique destiny membership ID.
+ * @param {string} accessToken The auth0 token given by bungie.
+ */
 async function getPlayerInventoryItems(membershipType, destinyMembershipId, accessToken) {
-	const components = "102,201,205,304";
-	const url = `https://www.bungie.net/Platform/Destiny2/${membershipType}/Profile/${destinyMembershipId}/?components=${components}`;
+	const components = [
+		"102", // ProfileInventories	- Vault armor
+		"201", // CharacterInventories	- Character armor p1
+		"205", // CharacterEquipment	- Character armor p2
+		"300", // ItemInstances			- Info to help filter armor from all items
+		"304", // ItemStats				- Armor stats
+	];
 
+	const url = `https://www.bungie.net/Platform/Destiny2/${membershipType}/Profile/${destinyMembershipId}/?components=${components.join(",")}`;
 	const response = await fetch(url, {
 		method: "GET",
 		headers: {
