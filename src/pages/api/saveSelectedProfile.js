@@ -1,4 +1,4 @@
-import {getCookie, setCookie} from "cookies-next";
+import {deleteCookie, getCookie, setCookie} from "cookies-next";
 import jwt from "jsonwebtoken";
 
 async function saveSelectedProfile(req, res) {
@@ -26,6 +26,9 @@ async function saveSelectedProfile(req, res) {
 		sameSite: "strict",
 		secure: true,
 	});
+
+	deleteCookie("membershipIds", {req, res});
+
 	res.status(200).send("ok");
 }
 
