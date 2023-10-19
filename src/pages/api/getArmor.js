@@ -1,5 +1,9 @@
-import dummyArmorData from "../../../dummyData.json" assert {type: "json"};
+import {getCookie} from "cookies-next";
+import jwt from "jsonwebtoken";
+import {DestinyItemCategoryDefinitionsEnum, getArmorDefinitions, initializeData} from "../../armorDefinitions";
 import validateAndRefreshAccessToken from "../../validateAndRefreshAccessToken";
+
+await initializeData();
 
 const statHashs = Object.freeze({
 	Accuracy: 1591432999,
@@ -64,15 +68,106 @@ async function getPlayerInventoryItems(membershipType, destinyMembershipId, acce
 	return data;
 }
 
-async function getArmor(req, res) {
-	return new Promise((resolve) => {
-		setTimeout(() => {
-			res.status(200).json(dummyArmorData);
-			resolve();
-		}, 3000);
-	});
+/** Returns if the armor piece is masterworked or not. */
+function getArmorPieceMasterwork(armorInstanceId, playerInventory) {
+	// The energy / level of the armor. 10 energy means it has been masterworked.
+	const energy = playerInventory.Response.itemComponents.instances.data[armorInstanceId].energy;
+	const masterwork = energy == null ? false : energy.energyCapacity === 10;
+	return masterwork;
 }
 
+/** Gets the armor piece's stats. */
+function getArmorPieceStats(armorInstanceId, playerInventory) {
+	const itemStats = playerInventory.Response.itemComponents.stats.data[armorInstanceId].stats;
+	const stats = [
+		itemStats[statHashs.Mobility].value, // Mobility
+		itemStats[statHashs.Resilience].value, // Resilience
+		itemStats[statHashs.Recovery].value, // Recovery
+		itemStats[statHashs.Discipline].value, // Discipline
+		itemStats[statHashs.Intellect].value, // Intellect
+		itemStats[statHashs.Strength].value, // Strength
+	];
+
+	return stats;
+}
+
+/** Returns an armors class (Titan, Hunter, Warlock) and type (Helmet, Arms, Chest. Legs, Class item). */
+function defineArmor(armorDefinition) {
+	let charClass;
+	let armorType;
+
+	// Figure out the armors class (Titan, Hunter, Warlock).
+	if (armorDefinition.itemCategoryHashes.includes(DestinyItemCategoryDefinitionsEnum.Titan)) charClass = 0;
+	else if (armorDefinition.itemCategoryHashes.includes(DestinyItemCategoryDefinitionsEnum.Hunter)) charClass = 1;
+	else if (armorDefinition.itemCategoryHashes.includes(DestinyItemCategoryDefinitionsEnum.Warlock)) charClass = 2;
+
+	// Figure out the armors type (Helmet, Arms, Chest. Legs, Class item).
+	if (armorDefinition.itemCategoryHashes.includes(DestinyItemCategoryDefinitionsEnum.Helmet)) armorType = 0;
+	else if (armorDefinition.itemCategoryHashes.includes(DestinyItemCategoryDefinitionsEnum.Arms)) armorType = 1;
+	else if (armorDefinition.itemCategoryHashes.includes(DestinyItemCategoryDefinitionsEnum.Chest)) armorType = 2;
+	else if (armorDefinition.itemCategoryHashes.includes(DestinyItemCategoryDefinitionsEnum.Legs)) armorType = 3;
+	else if (armorDefinition.itemCategoryHashes.includes(DestinyItemCategoryDefinitionsEnum.Class)) armorType = 4;
+
+	// eslint-disable-next-line camelcase
+	return {class: charClass, armor_type: armorType}; // match object names for client side
+}
+
+/** Finds all the armor from an inventory and returns a new version of it. */
+function getArmorFromInventory(inventory, armorDefinitions, playerInventory) {
+	const invArmor = inventory.reduce((armor, {itemHash, itemInstanceId}) => {
+		// item is armor
+		if (armorDefinitions.has(itemHash.toString())) {
+			armor.push({
+				...defineArmor(armorDefinitions.get(itemHash.toString())),
+				stats: getArmorPieceStats(itemInstanceId, playerInventory),
+				masterwork: getArmorPieceMasterwork(itemInstanceId, playerInventory),
+			});
+		}
+		return armor;
+	}, []);
+
+	return invArmor;
+}
+
+/** Iterates over each character to get the armor from their inventory. */
+function getArmorFromCharactersInventory(characters, armorDefinitions, playerInventory) {
+	const armor = [];
+	for (const [, character] of Object.entries(characters)) {
+		armor.push(...getArmorFromInventory(character.items, armorDefinitions, playerInventory));
+	}
+	return armor;
+}
+
+/** Goes through a players entire inventorys (characters, vault) and gets only the armor. */
+function GetPlayerArmor(armorDefinitions, playerInventory) {
+	const profileInventory = playerInventory.Response.profileInventory.data.items;
+	const characterInventories = playerInventory.Response.characterInventories.data;
+	const characterEquipment = playerInventory.Response.characterEquipment.data;
+
+	const playerArmor = [
+		...getArmorFromInventory(profileInventory, armorDefinitions, playerInventory),
+		...getArmorFromCharactersInventory(characterInventories, armorDefinitions, playerInventory),
+		...getArmorFromCharactersInventory(characterEquipment, armorDefinitions, playerInventory),
+	];
+
+	return playerArmor;
+}
+
+async function getArmor(req, res) {
+	const authCookie = getCookie("auth", {req, res});
+	const membershipCookie = getCookie("membership", {req, res});
+	const auth = jwt.verify(authCookie, process.env.SIGN_SECRET);
+	const membership = jwt.verify(membershipCookie, process.env.SIGN_SECRET);
+
+	const armorDefinitions = getArmorDefinitions();
+	// getPlayerInventoryItems(auth.destinyMemberships[0].membershipType, auth.destinyMemberships[0].membershipId, auth.accessToken);
+	const playerInventory = await getPlayerInventoryItems(membership.type, membership.id, auth.accessToken);
+	const playerArmor = GetPlayerArmor(armorDefinitions, playerInventory);
+
+	return res.status(200).json(playerArmor);
+}
+
+/** Handles the incoming request. */
 export default async function handler(req, res) {
 	switch (req.method) {
 		case "GET":
