@@ -20,7 +20,7 @@ async function getAccessToken(code) {
 	return data;
 }
 
-export default async function authorized(req, res) {
+async function authorized(req, res) {
 	// get state from the jwt inside the cookie
 	const cookie = getCookie("state", {req, res});
 	if (cookie === undefined) {
@@ -53,4 +53,16 @@ export default async function authorized(req, res) {
 		});
 		res.status(307).redirect("/accountSelection");
 	} else res.status(403).send("failed to authenticate.");
+}
+
+/** Handles the incoming request. */
+export default async function handler(req, res) {
+	switch (req.method) {
+		case "GET":
+			await authorized(req, res);
+			break;
+		default:
+			res.setHeader("Allow", "GET");
+			res.status(405).send();
+	}
 }
