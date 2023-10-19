@@ -55,7 +55,7 @@ async function getDestinyMemberships(req, res) {
 	const authCookie = getCookie("auth", {req, res});
 	const auth = jwt.verify(authCookie, process.env.SIGN_SECRET);
 
-	const {memberShips, cookie: idsCookie} = await getMemberships(auth.accessToken);
+	const {memberships, cookie: idsCookie} = await getMemberships(auth.accessToken);
 
 	// Save users platform ids for use in saveSelectedProfile API.
 	const signedToken = jwt.sign(idsCookie, process.env.SIGN_SECRET);
@@ -68,7 +68,7 @@ async function getDestinyMemberships(req, res) {
 		secure: true,
 	});
 
-	res.status(200).json(memberShips);
+	res.status(200).json(memberships);
 }
 
 /** Handles the incoming request. */
