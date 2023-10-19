@@ -56,7 +56,7 @@ const nextConfig = {
 				destination: "/authenticate",
 				permanent: false,
 			},
-			// hasent selected an account
+			// hasnt selected an account
 			{
 				source: "/",
 				has: [
