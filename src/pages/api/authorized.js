@@ -53,7 +53,7 @@ async function authorized(req, res) {
 		res,
 		httpOnly: true,
 		maxAge: 7776000,
-		sameSite: "strict",
+		sameSite: "lax", // Must be lax to send cookie when navigating to to the origin site from an external site (bungie auth, etc).
 		secure: true,
 	});
 
