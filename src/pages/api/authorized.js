@@ -1,13 +1,16 @@
 import {deleteCookie, getCookie, setCookie} from "cookies-next";
 import jwt from "jsonwebtoken";
 
-async function getAccessToken(code) {
+/** Requests an access token from bungie for the current user. */
+async function fetchAccessToken(code) {
+	// Construct the form to send to bungie.
 	const formData = new URLSearchParams();
 	formData.append("grant_type", "authorization_code");
 	formData.append("code", code);
 	formData.append("client_id", process.env.CLIENT_ID);
 	formData.append("client_secret", process.env.CLIENT_SECRET);
 
+	// Fetch access token.
 	const response = await fetch("https://www.bungie.net/platform/app/oauth/token/", {
 		method: "POST",
 		headers: {
@@ -20,39 +23,41 @@ async function getAccessToken(code) {
 	return data;
 }
 
+/** Handles the redirect from bungie after a user authorizes this app. Ensure a csrf didnt happen, then creates a session / auth cookie
+ * for the user to use the app and redirects them inside. */
 async function authorized(req, res) {
-	// get state from the jwt inside the cookie
-	const cookie = getCookie("state", {req, res});
-	if (cookie === undefined) {
+	// Get the state sent with the original auth request.
+	const stateCookie = getCookie("state", {req, res});
+	if (stateCookie === undefined) {
 		res.status(307).redirect("/authenticate");
 		return;
 	}
+	const state = jwt.verify(stateCookie, process.env.SIGN_SECRET);
 
-	const state = jwt.verify(cookie, process.env.SIGN_SECRET);
+	// Confirm the state is the same to prevent ensure a cross-site request forgery (csrf) did not happen.
+	if (req.query.state !== state) res.status(403).send("Failed to authenticate.");
 
-	// confirm the state is the same to prevent csrf
-	if (req.query.state === state) {
-		deleteCookie("state", {req, res});
-		const accessToken = await getAccessToken(req.query.code);
+	deleteCookie("state", {req, res}); // Cleanup, no longer necessary.
 
-		const token = {
-			accessToken: accessToken.access_token,
-			accessTokenExpiresAt: Math.floor(Date.now() / 1000) + accessToken.expires_in,
-			refreshToken: accessToken.refresh_token,
-			refreshTokenExpiresAt: Math.floor(Date.now() / 1000) + accessToken.refresh_expires_in,
-		};
+	// Create a session / auth cookie with the retrieved tokens.
+	const accessToken = await fetchAccessToken(req.query.code);
+	const token = {
+		accessToken: accessToken.access_token,
+		accessTokenExpiresAt: Math.floor(Date.now() / 1000) + accessToken.expires_in,
+		refreshToken: accessToken.refresh_token,
+		refreshTokenExpiresAt: Math.floor(Date.now() / 1000) + accessToken.refresh_expires_in,
+	};
+	const signedToken = jwt.sign(token, process.env.SIGN_SECRET);
+	setCookie("auth", signedToken, {
+		req,
+		res,
+		httpOnly: true,
+		maxAge: 7776000,
+		sameSite: "strict",
+		secure: true,
+	});
 
-		const signedToken = jwt.sign(token, process.env.SIGN_SECRET);
-		setCookie("auth", signedToken, {
-			req,
-			res,
-			httpOnly: true,
-			maxAge: 7776000,
-			sameSite: "strict",
-			secure: true,
-		});
-		res.status(307).redirect("/accountSelection");
-	} else res.status(403).send("failed to authenticate.");
+	res.status(307).redirect("/accountSelection");
 }
 
 /** Handles the incoming request. */
