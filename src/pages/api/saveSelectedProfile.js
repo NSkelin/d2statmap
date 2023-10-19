@@ -1,22 +1,26 @@
 import {deleteCookie, getCookie, setCookie} from "cookies-next";
 import jwt from "jsonwebtoken";
 
+/** Saves the sent in membership type with its corresponding ID to a new cookie for use in getArmor API. */
 async function saveSelectedProfile(req, res) {
 	const membershipType = req.body;
 
+	// Get auth cookie.
 	const authCookie = getCookie("auth", {req, res});
 	const authData = jwt.verify(authCookie, process.env.SIGN_SECRET);
 
+	// Get membershipIds cookie.
 	const idsCookie = getCookie("membershipIds", {req, res});
 	const memberships = jwt.verify(idsCookie, process.env.SIGN_SECRET);
 
+	// Set new cookies max age to match the auth tokens.
 	const maxAge = authData.refreshTokenExpiresAt - Math.floor(Date.now() / 1000);
 
+	// Create new cookie.
 	const token = {
 		id: memberships[membershipType],
 		type: membershipType,
 	};
-
 	const signedToken = jwt.sign(token, process.env.SIGN_SECRET);
 	setCookie("membership", signedToken, {
 		req,
