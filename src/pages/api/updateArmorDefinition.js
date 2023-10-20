@@ -11,7 +11,7 @@ const DestinyItemCategoryDefinitionsEnum = Object.freeze({
 	Class: 49,
 });
 
-async function getManifest() {
+async function fetchManifest() {
 	const response = await fetch("https://www.bungie.net/Platform/Destiny2/Manifest/", {
 		method: "GET",
 	});
@@ -19,8 +19,8 @@ async function getManifest() {
 	return data;
 }
 
-async function getInvItemDefinitions() {
-	const manifest = await getManifest();
+async function fetchInvItemDefinitions() {
+	const manifest = await fetchManifest();
 	const invURL = "https://www.bungie.net" + manifest.Response.jsonWorldComponentContentPaths.en.DestinyInventoryItemDefinition;
 	const response = await fetch(invURL, {
 		method: "GET",
@@ -32,7 +32,7 @@ async function getInvItemDefinitions() {
 async function getD2ArmorDefinitions() {
 	const mapOfDestinyArmorItems = new Map();
 
-	const items = await getInvItemDefinitions();
+	const items = await fetchInvItemDefinitions();
 	for (const [key, value] of Object.entries(items)) {
 		if (value.redacted === true) continue;
 		else if (value.itemCategoryHashes.includes(DestinyItemCategoryDefinitionsEnum.Armor)) {

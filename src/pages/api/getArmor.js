@@ -46,7 +46,7 @@ const statHashs = Object.freeze({
  * @param {string} destinyMembershipId The players unique destiny membership ID.
  * @param {string} accessToken The auth0 token given by bungie.
  */
-async function getPlayerInventoryItems(membershipType, destinyMembershipId, accessToken) {
+async function fetchPlayerInventoryItems(membershipType, destinyMembershipId, accessToken) {
 	const components = [
 		"102", // ProfileInventories	- Vault armor
 		"201", // CharacterInventories	- Character armor p1
@@ -161,7 +161,7 @@ async function getArmor(req, res) {
 
 	const armorDefinitions = getArmorDefinitions();
 	// getPlayerInventoryItems(auth.destinyMemberships[0].membershipType, auth.destinyMemberships[0].membershipId, auth.accessToken);
-	const playerInventory = await getPlayerInventoryItems(membership.type, membership.id, auth.accessToken);
+	const playerInventory = await fetchPlayerInventoryItems(membership.type, membership.id, auth.accessToken);
 	const playerArmor = GetPlayerArmor(armorDefinitions, playerInventory);
 
 	return res.status(200).json(playerArmor);
