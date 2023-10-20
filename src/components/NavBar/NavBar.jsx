@@ -1,12 +1,13 @@
-import React from "react";
-import styles from "./NavBar.module.css";
+import PropTypes from "prop-types";
+import React, {useContext} from "react";
+import styled, {css, keyframes} from "styled-components";
+import {useSWRConfig} from "swr";
 import NavIcon from "../../assets/patrol.svg";
 import RefreshIcon from "../../assets/refresh.svg";
-import Button from "../Button";
-import styled, {keyframes, css} from "styled-components";
-import PropTypes from "prop-types";
 import useArmor from "../../customHooks/useArmor";
-import {useSWRConfig} from "swr";
+import {DemoContext} from "../../demoContext";
+import Button from "../Button";
+import styles from "./NavBar.module.css";
 
 const spinAnimation = keyframes`
 	from {
@@ -32,9 +33,9 @@ const RefreshButton = styled.button`
 `;
 
 function NavBar({loggedIn, onLogout}) {
+	const demo = useContext(DemoContext);
 	const {mutate} = useSWRConfig();
-	const mode = loggedIn ? null : "none";
-	const {isValidating} = useArmor(mode);
+	const {isValidating} = useArmor(loggedIn ? demo : null); // Dont fetch if logged out, leads to infinite loop.
 
 	function handleRefresh() {
 		if (!isValidating) mutate("/api/getArmor");

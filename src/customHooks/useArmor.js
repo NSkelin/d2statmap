@@ -12,8 +12,12 @@ const fetcher = async (...args) => {
 	return await res.json();
 };
 
-export default function useArmor(mode) {
-	let key = mode === "demo" ? "/api/getDummyArmor" : mode === "none" ? null : "/api/getArmor";
+export default function useArmor(dummyData) {
+	let key;
+	if (dummyData == null) key = null; // null means dont fetch
+	else if (dummyData === true) key = "/api/getDummyArmor";
+	else if (dummyData === false) key = "/api/getArmor";
+
 	const {data, error, isLoading, isValidating} = useSWR(key, fetcher, {refreshInterval: 300000});
 
 	if (error && error.status === 401) {

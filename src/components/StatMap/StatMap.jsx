@@ -1,22 +1,23 @@
-import React, {useState} from "react";
 import PropTypes from "prop-types";
-import styles from "./StatMap.module.css";
-import Menu from "../Menu";
-import Title from "../Title";
-import HeatMap from "../HeatMap";
-import Button from "../Button";
-import CheckBox from "../CheckBox";
-import SelectOneButton from "../SelectOneButton";
-import HelmetIcon from "../../assets/helmet.svg";
-import GlovesIcon from "../../assets/gloves.svg";
-import ChestIcon from "../../assets/chest.svg";
+import React, {useContext, useState} from "react";
 import BootsIcon from "../../assets/boots.svg";
-import ClassIcon from "../../assets/helmet.svg";
-import IconCount from "../IconCount";
+import ChestIcon from "../../assets/chest.svg";
+import GlovesIcon from "../../assets/gloves.svg";
+import {default as ClassIcon, default as HelmetIcon} from "../../assets/helmet.svg";
 import useArmor from "../../customHooks/useArmor";
 import useCheckbox from "../../customHooks/useCheckbox";
+import {DemoContext} from "../../demoContext";
+import Button from "../Button";
+import CheckBox from "../CheckBox";
+import HeatMap from "../HeatMap";
+import IconCount from "../IconCount";
+import Menu from "../Menu";
+import SelectOneButton from "../SelectOneButton";
+import Title from "../Title";
+import styles from "./StatMap.module.css";
 
-function StatMap({minRange, maxRange, demo}) {
+function StatMap({minRange, maxRange}) {
+	const demo = useContext(DemoContext);
 	const [selectedClass, setSelectedClass] = useState("Hunter");
 	const [selectedArmorTypes, setSelectedArmorTypes] = useState({helmet: true, gloves: true, chest: true, boots: true, classItem: true});
 	const {armorData, loading, error} = useArmor(demo);

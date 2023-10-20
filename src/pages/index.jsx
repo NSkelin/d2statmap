@@ -1,16 +1,18 @@
-import React from "react";
-import {NavBar, StatMap} from "../components";
-import styles from "../app.module.css";
 import Head from "next/head";
-import {TailSpin} from "react-loader-spinner";
 import {useRouter} from "next/router";
-import useArmor from "../customHooks/useArmor";
 import PropTypes from "prop-types";
+import React, {useContext} from "react";
+import {TailSpin} from "react-loader-spinner";
+import styles from "../app.module.css";
+import {NavBar, StatMap} from "../components";
+import useArmor from "../customHooks/useArmor";
+import {DemoContext} from "../demoContext";
 
-function App({demo}) {
+function App() {
+	const demo = useContext(DemoContext);
 	const router = useRouter();
 
-	const {isLoading, error} = useArmor(demo ? "demo" : null);
+	const {isLoading, error} = useArmor(demo);
 
 	async function handleLogout() {
 		try {
@@ -35,7 +37,7 @@ function App({demo}) {
 				<TailSpin height="150" width="150" color="#a0c0bc" ariaLabel="tail-spin-loading" radius="1" /> <h2>Retrieving armor...</h2>
 			</div>
 		);
-	else appContent = <StatMap minRange={2} maxRange={32} demo={demo}></StatMap>;
+	else appContent = <StatMap minRange={2} maxRange={32}></StatMap>;
 
 	return (
 		<>
