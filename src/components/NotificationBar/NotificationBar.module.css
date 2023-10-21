@@ -1,0 +1,27 @@
+.noticeBar {
+    padding: 10px 60px 10px 60px;
+    background-color: rgb(35, 35, 35);
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid white;
+}
+.message {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.button {
+    border: none;
+    border-radius: 3px;
+    padding: 0 20px 0 20px;
+    background-color: transparent;
+    font-size: 20px;
+    color: white;
+}
+.button:hover {
+    cursor: pointer;
+}
+.link {
+    text-decoration: none;
+    margin-left: 30px;
+}
