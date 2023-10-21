@@ -15,8 +15,13 @@ async function fetchUserMemberships(accessToken) {
 		},
 	});
 
-	const data = await response.json();
-	return data.Response;
+	if (response.ok) {
+		const data = await response.json();
+		return data.Response;
+	} else {
+		console.log(response.status);
+		console.log(response);
+	}
 }
 
 /** Gets the enums that represent the platforms a user has accounts for (Steam, Xbox, etc.), the users associated ID for that platform,

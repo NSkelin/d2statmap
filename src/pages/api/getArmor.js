@@ -64,8 +64,13 @@ async function fetchPlayerInventoryItems(membershipType, destinyMembershipId, ac
 		},
 	});
 
-	const data = await response.json();
-	return data;
+	if (response.ok) {
+		const data = await response.json();
+		return data;
+	} else {
+		console.log(response.status);
+		console.log(response);
+	}
 }
 
 /** Returns if the armor piece is masterworked or not. */

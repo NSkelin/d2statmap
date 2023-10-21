@@ -15,8 +15,13 @@ async function fetchManifest() {
 	const response = await fetch("https://www.bungie.net/Platform/Destiny2/Manifest/", {
 		method: "GET",
 	});
-	const data = await response.json();
-	return data;
+	if (response.ok) {
+		const data = await response.json();
+		return data;
+	} else {
+		console.log(response.status);
+		console.log(response);
+	}
 }
 
 async function fetchInvItemDefinitions() {
@@ -25,8 +30,13 @@ async function fetchInvItemDefinitions() {
 	const response = await fetch(invURL, {
 		method: "GET",
 	});
-	const data = await response.json();
-	return data;
+	if (response.ok) {
+		const data = await response.json();
+		return data;
+	} else {
+		console.log(response.status);
+		console.log(response);
+	}
 }
 
 async function getD2ArmorDefinitions() {

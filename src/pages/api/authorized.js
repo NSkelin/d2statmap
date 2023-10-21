@@ -19,8 +19,13 @@ async function fetchAccessToken(code) {
 		body: formData.toString(),
 	});
 
-	const data = await response.json();
-	return data;
+	if (response.ok) {
+		const data = await response.json();
+		return data;
+	} else {
+		console.log(response.status);
+		console.log(response);
+	}
 }
 
 /** Handles the redirect from bungie after a user authorizes this app. Ensure a csrf didnt happen, then creates a session / auth cookie
