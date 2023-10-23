@@ -3,8 +3,10 @@ import jwt from "jsonwebtoken";
 import {DestinyItemCategoryDefinitionsEnum, getArmorDefinitions, initializeData} from "../../armorDefinitions";
 import validateAndRefreshAccessToken from "../../validateAndRefreshAccessToken";
 
+// Prepare the Destiny2 armor definitions on startup for later use.
 await initializeData();
 
+// The unique hash codes for most attributes in Destiny2.
 const statHashs = Object.freeze({
 	Accuracy: 1591432999,
 	AimAssist: 1345609583,
@@ -40,13 +42,16 @@ const statHashs = Object.freeze({
 	Zoom: 3555269338,
 });
 
-/** Gets a players entire inventory with each items stats, across all their characters and their vault.
+/**
+ * Fetchs all of the players Destiny2 inventories (vault, characters) and each inventory items stats.
  *
  * @param {number} membershipType The enum that represents the players membership type such as xbox, playstation, steam, etc.
  * @param {string} destinyMembershipId The players unique destiny membership ID.
  * @param {string} accessToken The auth0 token given by bungie.
+ *
+ * @returns {object} The players Destiny2 inventory items.
  */
-async function fetchPlayerInventoryItems(membershipType, destinyMembershipId, accessToken) {
+async function fetchPlayerProfile(membershipType, destinyMembershipId, accessToken) {
 	const components = [
 		"102", // ProfileInventories	- Vault armor
 		"201", // CharacterInventories	- Character armor p1
@@ -55,6 +60,7 @@ async function fetchPlayerInventoryItems(membershipType, destinyMembershipId, ac
 		"304", // ItemStats				- Armor stats
 	];
 
+	// Fetch inventories and item stats.
 	const url = `https://www.bungie.net/Platform/Destiny2/${membershipType}/Profile/${destinyMembershipId}/?components=${components.join(",")}`;
 	const response = await fetch(url, {
 		method: "GET",
@@ -68,22 +74,37 @@ async function fetchPlayerInventoryItems(membershipType, destinyMembershipId, ac
 		const data = await response.json();
 		return data;
 	} else {
+		// Log errors.
 		console.log(response.status);
 		console.log(response);
 	}
 }
 
-/** Returns if the armor piece is masterworked or not. */
-function getArmorPieceMasterwork(armorInstanceId, playerInventory) {
+/**
+ * Returns if the armor piece is masterworked or not.
+ *
+ * @param {string} armorInstanceId The armors unique ID that represents the specific instance of armor to check.
+ * @param {object} playerProfile The profile that contains all the players inventories, their items, and the items stats.
+ *
+ * @returns {boolean} True / false.
+ */
+function getArmorPieceMasterwork(armorInstanceId, playerProfile) {
 	// The energy / level of the armor. 10 energy means it has been masterworked.
-	const energy = playerInventory.Response.itemComponents.instances.data[armorInstanceId].energy;
+	const energy = playerProfile.Response.itemComponents.instances.data[armorInstanceId].energy;
 	const masterwork = energy == null ? false : energy.energyCapacity === 10;
 	return masterwork;
 }
 
-/** Gets the armor piece's stats. */
-function getArmorPieceStats(armorInstanceId, playerInventory) {
-	const itemStats = playerInventory.Response.itemComponents.stats.data[armorInstanceId].stats;
+/**
+ * Gets the values for an armor piece's 6 stats: Mobility, Resilience, Recovery, Discipline, Intellect, and Strength.
+ *
+ * @param {string} armorInstanceId The armors unique ID that represents the specific instance of armor to check.
+ * @param {object} playerProfile The profile that contains all the players inventories, their items, and the items stats.
+ *
+ * @returns {number[]} The armors 6 stats in this order: [Mobility, Resilience, Recovery, Discipline, Intellect, Strength]
+ */
+function getArmorPieceStats(armorInstanceId, playerProfile) {
+	const itemStats = playerProfile.Response.itemComponents.stats.data[armorInstanceId].stats;
 	const stats = [
 		itemStats[statHashs.Mobility].value, // Mobility
 		itemStats[statHashs.Resilience].value, // Resilience
@@ -96,7 +117,13 @@ function getArmorPieceStats(armorInstanceId, playerInventory) {
 	return stats;
 }
 
-/** Returns an armors class (Titan, Hunter, Warlock) and type (Helmet, Arms, Chest. Legs, Class item). */
+/**
+ * Returns an armors class (Titan, Hunter, Warlock) and type (Helmet, Arms, Chest. Legs, Class item).
+ *
+ * @param {Map<string, object>} armorDefinition A stripped down version of Bungies item manfiest only containing armor. See {@link getArmorDefinitions}
+ *
+ * @returns {{class: number, armor_type: number}} The armors class and type.
+ */
 function defineArmor(armorDefinition) {
 	let charClass;
 	let armorType;
@@ -117,15 +144,23 @@ function defineArmor(armorDefinition) {
 	return {class: charClass, armor_type: armorType}; // match object names for client side
 }
 
-/** Finds all the armor from an inventory and returns a new version of it. */
-function getArmorFromInventory(inventory, armorDefinitions, playerInventory) {
+/**
+ * Finds all the armor from a inventory, gets its stats, and returns it.
+ *
+ * @param {object[]} inventory The players inventory to search such as The Vault, Character inv, or Character equipped.
+ * @param {Map<string, object>} armorDefinitions A stripped down version of Bungies item manfiest only containing armor. See {@link getArmorDefinitions}
+ * @param {object} playerProfile The profile that contains all the players inventories, their items, and the items stats.
+ *
+ * @returns {object[]} All the armor found in the inventory with their stats.
+ */
+function getArmorFromInventory(inventory, armorDefinitions, playerProfile) {
 	const invArmor = inventory.reduce((armor, {itemHash, itemInstanceId}) => {
-		// item is armor
+		// Item is armor.
 		if (armorDefinitions.has(itemHash.toString())) {
 			armor.push({
 				...defineArmor(armorDefinitions.get(itemHash.toString())),
-				stats: getArmorPieceStats(itemInstanceId, playerInventory),
-				masterwork: getArmorPieceMasterwork(itemInstanceId, playerInventory),
+				stats: getArmorPieceStats(itemInstanceId, playerProfile),
+				masterwork: getArmorPieceMasterwork(itemInstanceId, playerProfile),
 			});
 		}
 		return armor;
@@ -134,30 +169,50 @@ function getArmorFromInventory(inventory, armorDefinitions, playerInventory) {
 	return invArmor;
 }
 
-/** Iterates over each character to get the armor from their inventory. */
-function getArmorFromCharactersInventory(characters, armorDefinitions, playerInventory) {
+/**
+ * Finds all the armor from each character inventory, gets its stats, and returns it.
+ *
+ * @param {object[][]} characterInventories The character inventories to search.
+ * @param {Map<string, object>} armorDefinitions A stripped down version of Bungies item manfiest only containing armor. See {@link getArmorDefinitions}
+ * @param {object} playerProfile The profile that contains all the players inventories, their items, and the items stats.
+ *
+ * @returns {object[]} All the armor found in the inventory with their stats.
+ */
+function getArmorFromCharactersInventory(characterInventories, armorDefinitions, playerProfile) {
 	const armor = [];
-	for (const [, character] of Object.entries(characters)) {
-		armor.push(...getArmorFromInventory(character.items, armorDefinitions, playerInventory));
+	for (const [, character] of Object.entries(characterInventories)) {
+		armor.push(...getArmorFromInventory(character.items, armorDefinitions, playerProfile));
 	}
 	return armor;
 }
 
-/** Goes through a players entire inventorys (characters, vault) and gets only the armor. */
-function GetPlayerArmor(armorDefinitions, playerInventory) {
-	const profileInventory = playerInventory.Response.profileInventory.data.items;
-	const characterInventories = playerInventory.Response.characterInventories.data;
-	const characterEquipment = playerInventory.Response.characterEquipment.data;
+/**
+ * Gets all the armor owned by a player and each armors stats.
+ *
+ * Goes through a players entire inventory (The Vault and Character equipment & inventory).
+ *
+ * @param {Map<string, object>} armorDefinitions A stripped down version of Bungies item manfiest only containing armor. See {@link getArmorDefinitions}
+ * @param {object} playerProfile The profile that contains all the players inventories, their items, and the items stats.
+ *
+ * @returns {object[]} All the armor owned by the player.
+ */
+function GetPlayerArmor(armorDefinitions, playerProfile) {
+	const profileInventory = playerProfile.Response.profileInventory.data.items; // The Vault.
+	const characterInventories = playerProfile.Response.characterInventories.data; // Items in character inventories.
+	const characterEquipment = playerProfile.Response.characterEquipment.data; // Items equipped by characters.
 
 	const playerArmor = [
-		...getArmorFromInventory(profileInventory, armorDefinitions, playerInventory),
-		...getArmorFromCharactersInventory(characterInventories, armorDefinitions, playerInventory),
-		...getArmorFromCharactersInventory(characterEquipment, armorDefinitions, playerInventory),
+		...getArmorFromInventory(profileInventory, armorDefinitions, playerProfile),
+		...getArmorFromCharactersInventory(characterInventories, armorDefinitions, playerProfile),
+		...getArmorFromCharactersInventory(characterEquipment, armorDefinitions, playerProfile),
 	];
 
 	return playerArmor;
 }
 
+/**
+ * Handles requests to get a players armor.
+ */
 async function getArmor(req, res) {
 	const authCookie = getCookie("auth", {req, res});
 	const membershipCookie = getCookie("membership", {req, res});
@@ -165,9 +220,8 @@ async function getArmor(req, res) {
 	const membership = jwt.verify(membershipCookie, process.env.SIGN_SECRET);
 
 	const armorDefinitions = getArmorDefinitions();
-	// getPlayerInventoryItems(auth.destinyMemberships[0].membershipType, auth.destinyMemberships[0].membershipId, auth.accessToken);
-	const playerInventory = await fetchPlayerInventoryItems(membership.type, membership.id, auth.accessToken);
-	const playerArmor = GetPlayerArmor(armorDefinitions, playerInventory);
+	const playerProfile = await fetchPlayerProfile(membership.type, membership.id, auth.accessToken);
+	const playerArmor = GetPlayerArmor(armorDefinitions, playerProfile);
 
 	return res.status(200).json(playerArmor);
 }
