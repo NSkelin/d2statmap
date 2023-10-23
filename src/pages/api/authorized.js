@@ -1,7 +1,13 @@
 import {deleteCookie, getCookie, setCookie} from "cookies-next";
 import jwt from "jsonwebtoken";
 
-/** Requests an access token from bungie for the current user. */
+/**
+ * Requests an access token from bungie for the current user.
+ *
+ * @param {string} code Authorization code received from the authorization endpoint
+ *
+ * @returns The authorization object returned by Bungie.
+ */
 async function fetchAccessToken(code) {
 	// Construct the form to send to bungie.
 	const formData = new URLSearchParams();
@@ -23,13 +29,21 @@ async function fetchAccessToken(code) {
 		const data = await response.json();
 		return data;
 	} else {
+		// Log errors.
 		console.log(response.status);
 		console.log(response);
 	}
 }
 
-/** Handles the redirect from bungie after a user authorizes this app. Ensure a csrf didnt happen, then creates a session / auth cookie
- * for the user to use the app and redirects them inside. */
+/**
+ * Confirms a users authorization with Bungie.
+ *
+ * When a user authorizes this app, Bungie will redirect them to this endpoint.
+ * The endpoint ensures a csrf didnt happen and then creates a session for the user
+ * before redirecting them to the account selection page.
+ *
+ * See {@link https://github.com/Bungie-net/api/wiki/OAuth-Documentation} for more info.
+ */
 async function authorized(req, res) {
 	// Get the state sent with the original auth request.
 	const stateCookie = getCookie("state", {req, res});
@@ -42,9 +56,10 @@ async function authorized(req, res) {
 	// Confirm the state is the same to prevent ensure a cross-site request forgery (csrf) did not happen.
 	if (req.query.state !== state) res.status(403).send("Failed to authenticate.");
 
-	deleteCookie("state", {req, res}); // Cleanup, no longer necessary.
+	// Cleanup state as its no longer necessary.
+	deleteCookie("state", {req, res});
 
-	// Create a session / auth cookie with the retrieved tokens.
+	// Create a session / auth cookie with the given auth tokens.
 	const accessToken = await fetchAccessToken(req.query.code);
 	const token = {
 		accessToken: accessToken.access_token,
@@ -58,14 +73,16 @@ async function authorized(req, res) {
 		res,
 		httpOnly: true,
 		maxAge: 7776000,
-		sameSite: "lax", // Must be lax to send cookie when navigating to to the origin site from an external site (bungie auth, etc).
+		sameSite: "lax", // Must be lax so we can send the auth cookie when redirecting to account selection. (Origin is Bungie).
 		secure: true,
 	});
 
 	res.status(307).redirect("/accountSelection");
 }
 
-/** Handles the incoming request. */
+/**
+ * Handles the incoming request.
+ */
 export default async function handler(req, res) {
 	switch (req.method) {
 		case "GET":
