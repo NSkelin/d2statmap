@@ -85,7 +85,9 @@ async function getDestinyMemberships(req, res) {
 	res.status(200).json(memberships);
 }
 
-/** Handles the incoming request. */
+/**
+ * Handles the incoming request.
+ */
 export default async function handler(req, res) {
 	switch (req.method) {
 		case "GET":

@@ -12,7 +12,9 @@ export function getDummyArmor(req, res) {
 	});
 }
 
-/** Handles the incoming request. */
+/**
+ * Handles the incoming request.
+ */
 export default async function handler(req, res) {
 	switch (req.method) {
 		case "GET":

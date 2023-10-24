@@ -226,7 +226,9 @@ async function getArmor(req, res) {
 	return res.status(200).json(playerArmor);
 }
 
-/** Handles the incoming request. */
+/**
+ * Handles the incoming request.
+ */
 export default async function handler(req, res) {
 	switch (req.method) {
 		case "GET":

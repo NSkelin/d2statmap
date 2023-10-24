@@ -22,7 +22,9 @@ async function getAuthURL(req, res) {
 	res.redirect(`https://www.bungie.net/en/OAuth/Authorize?client_id=${process.env.CLIENT_ID}&response_type=code&state=${state}`);
 }
 
-/** Handles the incoming request. */
+/**
+ * Handles the incoming request.
+ */
 export default async function handler(req, res) {
 	switch (req.method) {
 		case "POST":
