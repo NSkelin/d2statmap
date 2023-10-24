@@ -23,7 +23,7 @@ async function requestNewAccessToken(refreshToken) {
 
 /** Requests a new access token and updates the auth cookie with the new access & refresh token & their expiration times */
 async function refreshAccessToken(req, res, refreshToken) {
-	const newAccessToken = requestNewAccessToken(refreshToken);
+	const newAccessToken = await requestNewAccessToken(refreshToken);
 	const token = {
 		accessToken: newAccessToken.access_token,
 		accessTokenExpiresAt: Math.floor(Date.now() / 1000) + newAccessToken.expires_in,
@@ -32,7 +32,6 @@ async function refreshAccessToken(req, res, refreshToken) {
 	};
 
 	const signedToken = jwt.sign(token, process.env.SIGN_SECRET);
-	deleteCookie("auth", {req, res});
 	setCookie("auth", signedToken, {
 		req,
 		res,
@@ -48,14 +47,13 @@ async function refreshAccessToken(req, res, refreshToken) {
  * If the users auth expires, then the selected membership for that auth should also expire.
  */
 async function updateMembershipMaxAge(req, res) {
-	const membership = getCookie("membership", req, res);
+	const membership = getCookie("membership", {req, res});
 	const authCookie = getCookie("auth", {req, res});
 
 	const authData = jwt.verify(authCookie, process.env.SIGN_SECRET);
 
 	const maxAge = authData.refreshTokenExpiresAt - Math.floor(Date.now() / 1000);
 
-	deleteCookie("membership", {req, res});
 	setCookie("membership", membership, {
 		req,
 		res,
@@ -80,24 +78,21 @@ export default async function validateAndRefreshAccessToken(req, res, handler) {
 	// + 60 seconds so i dont need to worry about tokens expiring as my code is running
 	const now = Date.now() / 1000 + 60;
 
-	// validate token or refresh if possible or redirect to authenticate
-	if (auth.accessTokenExpiresAt < now) {
-		// access token is expired
-		if (auth.refreshTokenExpiresAt < now) {
-			deleteCookie("auth", {req, res});
-			// refresh token is expired, reauthenticate
-			res.status(401).json("unauthorized");
-			return;
-		} else {
-			// refresh access token and update cookie
-			await refreshAccessToken(req, res, auth.refreshToken);
-			await updateMembershipMaxAge(req, res);
-			await handler(req, res);
-			return;
-		}
+	const accessTokenExpired = auth.accessTokenExpiresAt < now;
+	const refreshTokenExpired = auth.refreshTokenExpiresAt < now;
+
+	if (accessTokenExpired && refreshTokenExpired) {
+		// both tokens expired, requires re-authentication
+		deleteCookie("auth", {req, res});
+		deleteCookie("membership", {req, res});
+		res.status(401).json("unauthorized");
+	} else if (accessTokenExpired) {
+		// refresh access token and update cookie
+		await refreshAccessToken(req, res, auth.refreshToken);
+		await updateMembershipMaxAge(req, res);
+		await handler(req, res);
 	} else {
 		// access token is valid
 		await handler(req, res);
-		return;
 	}
 }
