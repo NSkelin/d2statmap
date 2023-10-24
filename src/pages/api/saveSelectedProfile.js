@@ -1,7 +1,9 @@
 import {deleteCookie, getCookie, setCookie} from "cookies-next";
 import jwt from "jsonwebtoken";
 
-/** Saves the sent in membership type with its corresponding ID to a new cookie for use in getArmor API. */
+/**
+ * Saves the sent in membership type with its corresponding ID to a new cookie for use in getArmor API.
+ */
 async function saveSelectedProfile(req, res) {
 	const membershipType = req.body;
 
@@ -31,12 +33,15 @@ async function saveSelectedProfile(req, res) {
 		secure: true,
 	});
 
+	// Cleanup / delete unnecessary cookie.
 	deleteCookie("membershipIds", {req, res});
 
 	res.status(200).send("ok");
 }
 
-/** Handles the incoming request. */
+/**
+ * Handles the incoming request.
+ */
 export default async function handler(req, res) {
 	switch (req.method) {
 		case "POST":
