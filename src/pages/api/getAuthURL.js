@@ -5,7 +5,7 @@ import {nanoid} from "nanoid";
 /**
  * Handles secure redirects to the Bungie authentication server.
  */
-async function getAuthURL(req, res) {
+function getAuthURL(req, res) {
 	// Create a state key to prevent csrf attacks.
 	const state = nanoid();
 	const token = jwt.sign(state, process.env.SIGN_SECRET);
@@ -28,7 +28,7 @@ async function getAuthURL(req, res) {
 export default async function handler(req, res) {
 	switch (req.method) {
 		case "POST":
-			await getAuthURL(req, res);
+			getAuthURL(req, res);
 			break;
 		default:
 			res.setHeader("Allow", "POST");

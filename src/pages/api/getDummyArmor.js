@@ -3,7 +3,7 @@ import dummyArmorData from "../../../dummyData.json" assert {type: "json"};
 /**
  * Returns dummy armor data after a short delay.
  */
-export function getDummyArmor(req, res) {
+function getDummyArmor(req, res) {
 	return new Promise((resolve) => {
 		setTimeout(() => {
 			res.status(200).json(dummyArmorData);
@@ -18,7 +18,7 @@ export function getDummyArmor(req, res) {
 export default async function handler(req, res) {
 	switch (req.method) {
 		case "GET":
-			await getDummyArmor(req, res);
+			getDummyArmor(req, res);
 			break;
 		default:
 			res.setHeader("Allow", "GET");
