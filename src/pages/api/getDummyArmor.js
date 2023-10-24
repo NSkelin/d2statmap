@@ -1,15 +1,25 @@
 import dummyArmorData from "../../../dummyData.json" assert {type: "json"};
 
-export default function getDummyArmor(req, res) {
-	if (req.method != "GET") {
-		res.setHeader("Allow", "GET");
-		res.status(405).send();
-		return;
-	}
+/**
+ * Returns dummy armor data after a short delay.
+ */
+export function getDummyArmor(req, res) {
 	return new Promise((resolve) => {
 		setTimeout(() => {
 			res.status(200).json(dummyArmorData);
 			resolve();
 		}, 3000);
 	});
+}
+
+/** Handles the incoming request. */
+export default async function handler(req, res) {
+	switch (req.method) {
+		case "GET":
+			await getDummyArmor(req, res);
+			break;
+		default:
+			res.setHeader("Allow", "GET");
+			res.status(405).send();
+	}
 }
