@@ -1,14 +1,25 @@
 import {deleteCookie, getCookie, setCookie} from "cookies-next";
 import jwt from "jsonwebtoken";
 
-/** Requests a new access token from Bungie */
+/**
+ * Requests a new access token from Bungie.
+ *
+ * When the users access token expires, we can no longer view their profile data needed for the app to keep running.
+ * If they still have a refresh token though, we can re-authenticate them automatically without needing to pester them each hour.
+ *
+ * @param {string} refreshToken The users refresh token that came with the initial auth request.
+ *
+ * @returns The response from Bungie.
+ */
 async function requestNewAccessToken(refreshToken) {
+	// Create form for request.
 	const formData = new URLSearchParams();
 	formData.append("grant_type", "refresh_token");
 	formData.append("refresh_token", refreshToken);
 	formData.append("client_id", process.env.CLIENT_ID);
 	formData.append("client_secret", process.env.CLIENT_SECRET);
 
+	// Request new access token.
 	const response = await fetch("https://www.bungie.net/platform/app/oauth/token/", {
 		method: "POST",
 		headers: {
@@ -17,12 +28,18 @@ async function requestNewAccessToken(refreshToken) {
 		body: formData.toString(),
 	});
 
+	// Return response.
 	const data = await response.json();
 	return data;
 }
 
-/** Requests a new access token and updates the auth cookie with the new access & refresh token & their expiration times */
+/**
+ * Requests a new access token and updates the auth cookie with the new access & refresh token & their expiration times
+ *
+ * @param {string} refreshToken The users refresh token that came with the initial auth request.
+ */
 async function refreshAccessToken(req, res, refreshToken) {
+	// Get new access token.
 	const newAccessToken = await requestNewAccessToken(refreshToken);
 	const token = {
 		accessToken: newAccessToken.access_token,
@@ -31,6 +48,7 @@ async function refreshAccessToken(req, res, refreshToken) {
 		refreshTokenExpiresAt: Math.floor(Date.now() / 1000) + newAccessToken.refresh_expires_in,
 	};
 
+	// Update auth cookie with new token.
 	const signedToken = jwt.sign(token, process.env.SIGN_SECRET);
 	setCookie("auth", signedToken, {
 		req,
@@ -42,18 +60,19 @@ async function refreshAccessToken(req, res, refreshToken) {
 	});
 }
 
-/** Updates the cookie holding the users selected membership to keep its expirey in sync with the authorization token.
+/**
+ * Updates the cookie holding the users selected membership to keep its maxAge in sync with the authorization token.
  *
  * If the users auth expires, then the selected membership for that auth should also expire.
  */
 async function updateMembershipMaxAge(req, res) {
-	const membership = getCookie("membership", {req, res});
+	// Get auth cookie maxAge.
 	const authCookie = getCookie("auth", {req, res});
-
 	const authData = jwt.verify(authCookie, process.env.SIGN_SECRET);
-
 	const maxAge = authData.refreshTokenExpiresAt - Math.floor(Date.now() / 1000);
 
+	// Update cookie maxAge.
+	const membership = getCookie("membership", {req, res});
 	setCookie("membership", membership, {
 		req,
 		res,
@@ -64,35 +83,45 @@ async function updateMembershipMaxAge(req, res) {
 	});
 }
 
-/** Validates that the access token is still valid. If not it will attempt to refresh it with the refresh token. */
+/**
+ * A middleware to ensure a users authorization is still valid before continuing.
+ *
+ * This will check if the users access token is expired. If it is, then the refresh token will be used to refresh the access token if possible.
+ * Finally, the handler will be called with the updated auth cookie.
+ *
+ * If the access token is expired and cant be refreshed then the cookies will be deleted, a 401 will be returned, and the handler will not be called.
+ *
+ * @param {async (req, res) => void} handler The function to callback if the token is valid / refreshed.
+ */
 export default async function validateAndRefreshAccessToken(req, res, handler) {
 	const cookie = getCookie("auth", {req, res});
-	// check if auth cookie doesnt exist
+
+	// Check if auth cookie doesnt exist.
 	if (cookie === undefined) {
 		res.status(401).json("unauthorized");
 		return;
 	}
 
-	const auth = jwt.verify(cookie, process.env.SIGN_SECRET);
-	// date in milliseconds converted to seconds (x / 1000).
-	// + 60 seconds so i dont need to worry about tokens expiring as my code is running
+	// Date in milliseconds converted to seconds (x / 1000).
+	// Add 60 seconds as a buffer so tokens dont expire immediately after in the handler.
 	const now = Date.now() / 1000 + 60;
 
+	const auth = jwt.verify(cookie, process.env.SIGN_SECRET);
 	const accessTokenExpired = auth.accessTokenExpiresAt < now;
 	const refreshTokenExpired = auth.refreshTokenExpiresAt < now;
 
 	if (accessTokenExpired && refreshTokenExpired) {
-		// both tokens expired, requires re-authentication
+		// Both tokens expired, requires re-authentication.
 		deleteCookie("auth", {req, res});
 		deleteCookie("membership", {req, res});
 		res.status(401).json("unauthorized");
 	} else if (accessTokenExpired) {
-		// refresh access token and update cookie
+		// Refresh access token and update cookies.
 		await refreshAccessToken(req, res, auth.refreshToken);
 		await updateMembershipMaxAge(req, res);
 		await handler(req, res);
 	} else {
-		// access token is valid
+		// Access token is valid.
 		await handler(req, res);
 	}
 }
