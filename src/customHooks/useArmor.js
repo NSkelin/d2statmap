@@ -1,6 +1,6 @@
 import useSWR from "swr";
 
-const fetcher = async (...args) => {
+async function fetcher(...args) {
 	const res = await fetch(...args);
 	if (!res.ok) {
 		const error = new Error("An error occurred while fetching the data.");
@@ -10,7 +10,7 @@ const fetcher = async (...args) => {
 		throw error;
 	}
 	return await res.json();
-};
+}
 
 export default function useArmor(dummyData) {
 	let key;

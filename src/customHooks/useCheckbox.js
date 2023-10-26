@@ -1,6 +1,8 @@
 import useSWR from "swr";
 
-const fetcher = (...args) => localStorage.getItem(...args);
+function fetcher(...args) {
+	return localStorage.getItem(...args);
+}
 
 export default function useCheckbox(id) {
 	const {data, error} = useSWR(`checkbox/${id}`, fetcher);
