@@ -20,6 +20,7 @@ async function fetchAccessToken(code) {
 	const response = await fetch("https://www.bungie.net/platform/app/oauth/token/", {
 		method: "POST",
 		headers: {
+			"X-API-KEY": process.env.CLIENT_API_KEY,
 			"Content-Type": "application/x-www-form-urlencoded",
 		},
 		body: formData.toString(),

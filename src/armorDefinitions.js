@@ -32,6 +32,9 @@ export const DestinyItemCategoryDefinitionsEnum = Object.freeze({
 async function fetchManifest() {
 	const response = await fetch("https://www.bungie.net/Platform/Destiny2/Manifest/", {
 		method: "GET",
+		headers: {
+			"X-API-KEY": process.env.CLIENT_API_KEY,
+		},
 	});
 	const data = await response.json();
 	return data;
@@ -47,6 +50,9 @@ async function getInvItemDefinitions() {
 	const invURL = "https://www.bungie.net" + manifest.Response.jsonWorldComponentContentPaths.en.DestinyInventoryItemDefinition;
 	const response = await fetch(invURL, {
 		method: "GET",
+		headers: {
+			"X-API-KEY": process.env.CLIENT_API_KEY,
+		},
 	});
 	const data = await response.json();
 	return data;
