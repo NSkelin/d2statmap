@@ -34,7 +34,7 @@ async function fetchUserMemberships(accessToken) {
  *
  * @param {string} accessToken A unique authorization token supplied by bungie for a user.
  *
- * @returns {{memberships: object, cookie: object}} Two objects, one with the users unique bungie.net name and an array of their destiny membership types.
+ * @returns {Promise<{memberships: object, cookie: object}>} Two objects, one with the users unique bungie.net name and an array of their destiny membership types.
  * The other with the previous data but including the users unique ID for each platform.
  */
 async function getMemberships(accessToken) {
