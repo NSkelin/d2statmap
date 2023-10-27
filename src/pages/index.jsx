@@ -1,6 +1,5 @@
 import Head from "next/head";
 import {useRouter} from "next/router";
-import PropTypes from "prop-types";
 import React, {useContext} from "react";
 import {TailSpin} from "react-loader-spinner";
 import {NavBar, StatMap} from "../components";
@@ -57,13 +56,5 @@ function App() {
 		</>
 	);
 }
-
-App.defaultProps = {
-	demo: false,
-};
-
-App.propTypes = {
-	demo: PropTypes.bool,
-};
 
 export default App;
