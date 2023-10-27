@@ -1,6 +1,12 @@
+/**
+ * This page handles authorizing our app.
+ *
+ * A user must first authorize our app with Bungie before we can read certain data from their account.
+ * The page consists of a button to redirect users to Bungies authorization page.
+ */
 import React from "react";
-import {NavBar, Button} from "../components";
 import styles from "../authenticate.module.css";
+import {Button, NavBar} from "../components";
 
 function Authenticate() {
 	return (
