@@ -3,10 +3,10 @@ import {useRouter} from "next/router";
 import PropTypes from "prop-types";
 import React, {useContext} from "react";
 import {TailSpin} from "react-loader-spinner";
-import styles from "../app.module.css";
 import {NavBar, StatMap} from "../components";
 import useArmor from "../customHooks/useArmor";
 import {DemoContext} from "../demoContext";
+import styles from "../index.module.css";
 
 function App() {
 	const demo = useContext(DemoContext);
