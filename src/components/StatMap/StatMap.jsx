@@ -16,6 +16,104 @@ import SelectOneButton from "../SelectOneButton";
 import Title from "../Title";
 import styles from "./StatMap.module.css";
 
+const characterClasses = Object.freeze({
+	0: "Titan",
+	1: "Hunter",
+	2: "Warlock",
+	3: "unknown",
+});
+
+const armorTypes = Object.freeze({
+	0: "helmet",
+	1: "gloves",
+	2: "chest",
+	3: "boots",
+	4: "classItem",
+});
+
+function countArmor(armorData) {
+	const characterArmors = {};
+
+	for (let armor of armorData) {
+		const character = characterClasses[armor.class];
+		if (characterArmors[character] === undefined) {
+			characterArmors[character] = {total: 1};
+		} else characterArmors[character].total = characterArmors[character].total + 1;
+
+		const type = armorTypes[armor.armor_type];
+		if (characterArmors[character][type] === undefined) {
+			characterArmors[character][type] = 1;
+		} else characterArmors[character][type] = characterArmors[character][type] + 1;
+	}
+
+	return characterArmors;
+}
+
+function parseArmor(armorData, selectedClass, selectedArmorTypes, assumeMasterwork, minRange, maxRange, normalizeCount) {
+	const filteredArmor = filterArmor(armorData, selectedClass, selectedArmorTypes);
+	const stats = getArmorStats(filteredArmor, assumeMasterwork);
+	return normalizeArmorStats(stats, minRange, maxRange, normalizeCount);
+}
+
+function filterArmor(armorData, selectedClass, allowedArmorTypes) {
+	const filteredArmor = [];
+	for (const armor of armorData) {
+		const character = characterClasses[armor.class];
+		const type = armorTypes[armor.armor_type];
+
+		if (character != selectedClass) continue;
+		else if (allowedArmorTypes[type] === false) continue;
+
+		filteredArmor.push(armor);
+	}
+	return filteredArmor;
+}
+
+function getArmorStats(armors, assumeMasterwork) {
+	let stats = [[], [], [], [], [], []];
+	for (let armor of armors) {
+		for (let [i, stat] of armor.stats.entries()) {
+			if (assumeMasterwork && !armor.masterwork) {
+				stat += 2;
+			}
+			stats[i].push(stat);
+		}
+	}
+	return stats;
+}
+
+// for each array it will count how many numbers in the stats array are higher than each point in the range
+// of values that the stat map will display and then normalizes that count to determine the color
+// of each point on the stat map / heatmap
+function normalizeArmorStats(armorStats, minRange, maxRange, normalizeCount) {
+	let normalizedArmorStats = [];
+	for (let stats of armorStats) {
+		normalizedArmorStats.push(normalizeStats(stats, minRange, maxRange, normalizeCount));
+	}
+	return normalizedArmorStats;
+}
+
+// counts how many numbers in the stats array are higher than each point in the range the stat map will display
+// and then normalizes that count to determine the color of each point on the stat map / heatmap
+function normalizeStats(stats, minRange, maxRange, normalizeCount) {
+	// sort stats into ascending order
+	stats.sort((a, b) => a - b);
+
+	let n = 0;
+	let normalizedValues = [];
+	for (let i = minRange; i <= maxRange + 1; i++) {
+		while (stats[n] < i && n < stats.length) {
+			n++;
+		}
+
+		let count = stats.length - n;
+		let normalizedValue = Math.round((count / normalizeCount) * 100) / 100; //rounds to 2 decimal
+		normalizedValues.push(normalizedValue);
+	}
+
+	return normalizedValues;
+}
+
 function StatMap({minRange, maxRange}) {
 	const demo = useContext(DemoContext);
 	const [selectedClass, setSelectedClass] = useState("Hunter");
@@ -91,117 +189,6 @@ function StatMap({minRange, maxRange}) {
 			</Menu>
 		</main>
 	);
-}
-
-function countArmor(armorData) {
-	const characterClasses = Object.freeze({
-		0: "Titan",
-		1: "Hunter",
-		2: "Warlock",
-		3: "unknown",
-	});
-	const armorTypes = Object.freeze({
-		0: "helmet",
-		1: "gloves",
-		2: "chest",
-		3: "boots",
-		4: "classItem",
-	});
-
-	const characterArmors = {};
-
-	for (let armor of armorData) {
-		const character = characterClasses[armor.class];
-		if (characterArmors[character] === undefined) {
-			characterArmors[character] = {total: 1};
-		} else characterArmors[character].total = characterArmors[character].total + 1;
-
-		const type = armorTypes[armor.armor_type];
-		if (characterArmors[character][type] === undefined) {
-			characterArmors[character][type] = 1;
-		} else characterArmors[character][type] = characterArmors[character][type] + 1;
-	}
-
-	return characterArmors;
-}
-
-function parseArmor(armorData, selectedClass, selectedArmorTypes, assumeMasterwork, minRange, maxRange, normalizeCount) {
-	const filteredArmor = filterArmor(armorData, selectedClass, selectedArmorTypes);
-	const stats = getArmorStats(filteredArmor, assumeMasterwork);
-	return normalizeArmorStats(stats, minRange, maxRange, normalizeCount);
-}
-
-function filterArmor(armorData, selectedClass, allowedArmorTypes) {
-	const characterClasses = Object.freeze({
-		0: "Titan",
-		1: "Hunter",
-		2: "Warlock",
-		3: "unknown",
-	});
-	const armorTypes = Object.freeze({
-		0: "helmet",
-		1: "gloves",
-		2: "chest",
-		3: "boots",
-		4: "classItem",
-	});
-
-	const filteredArmor = [];
-	for (const armor of armorData) {
-		const character = characterClasses[armor.class];
-		const type = armorTypes[armor.armor_type];
-
-		if (character != selectedClass) continue;
-		else if (allowedArmorTypes[type] === false) continue;
-
-		filteredArmor.push(armor);
-	}
-	return filteredArmor;
-}
-
-function getArmorStats(armors, assumeMasterwork) {
-	let stats = [[], [], [], [], [], []];
-	for (let armor of armors) {
-		for (let [i, stat] of armor.stats.entries()) {
-			if (assumeMasterwork && !armor.masterwork) {
-				stat += 2;
-			}
-			stats[i].push(stat);
-		}
-	}
-	return stats;
-}
-
-// for each array it will count how many numbers in the stats array are higher than each point in the range
-// of values that the stat map will display and then normalizes that count to determine the color
-// of each point on the stat map / heatmap
-function normalizeArmorStats(armorStats, minRange, maxRange, normalizeCount) {
-	let normalizedArmorStats = [];
-	for (let stats of armorStats) {
-		normalizedArmorStats.push(normalizeStats(stats, minRange, maxRange, normalizeCount));
-	}
-	return normalizedArmorStats;
-}
-
-// counts how many numbers in the stats array are higher than each point in the range the stat map will display
-// and then normalizes that count to determine the color of each point on the stat map / heatmap
-function normalizeStats(stats, minRange, maxRange, normalizeCount) {
-	// sort stats into ascending order
-	stats.sort((a, b) => a - b);
-
-	let n = 0;
-	let normalizedValues = [];
-	for (let i = minRange; i <= maxRange + 1; i++) {
-		while (stats[n] < i && n < stats.length) {
-			n++;
-		}
-
-		let count = stats.length - n;
-		let normalizedValue = Math.round((count / normalizeCount) * 100) / 100; //rounds to 2 decimal
-		normalizedValues.push(normalizedValue);
-	}
-
-	return normalizedValues;
 }
 
 StatMap.defaultProps = {
