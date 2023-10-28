@@ -1,5 +1,5 @@
-import React from "react";
 import PropTypes from "prop-types";
+import React from "react";
 import styled from "styled-components";
 
 const StyledButton = styled.button`
@@ -32,6 +32,17 @@ const StyledButton = styled.button`
 	}
 `;
 
+/**
+ * A custom button component that can be selected like a checkbox and allows
+ * some style customization.
+ *
+ * @param {boolean} stretch Tells the button to stretch to fill its container width.
+ * @param {boolean} selected Changes the buttons background to visually state its selected.
+ * @param {number} size Allows changing the buttons size.
+ * @param children Any react child elements to render inside the button.
+ * @param name The button name attribute.
+ * @param onClick The button onClick attribute.
+ */
 function Button({name, stretch, onClick, selected, children, size}) {
 	const style = selected ? "selected" : null;
 
