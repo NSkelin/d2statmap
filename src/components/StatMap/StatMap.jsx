@@ -16,6 +16,7 @@ import SelectOneButton from "../SelectOneButton";
 import Title from "../Title";
 import styles from "./StatMap.module.css";
 
+// Enum definitions for values returned by API related to character classes.
 const characterClasses = Object.freeze({
 	0: "Titan",
 	1: "Hunter",
@@ -23,6 +24,7 @@ const characterClasses = Object.freeze({
 	3: "unknown",
 });
 
+// Enum definitions for values returned by API related to armor types.
 const armorTypes = Object.freeze({
 	0: "helmet",
 	1: "gloves",
@@ -31,60 +33,140 @@ const armorTypes = Object.freeze({
 	4: "classItem",
 });
 
+/**
+ * Goes through all the armor and counts the total pieces for each class
+ * and counts the total for each type of armor grouped by class.
+ *
+ * @param {array} armorData The armor to count.
+ *
+ * @returns {object} An object that contains the total armor count for each class as well as the type breakdown of those armors.
+ */
 function countArmor(armorData) {
-	const characterArmors = {};
+	const armorCounts = {};
 
-	for (let armor of armorData) {
-		const character = characterClasses[armor.class];
-		if (characterArmors[character] === undefined) {
-			characterArmors[character] = {total: 1};
-		} else characterArmors[character].total = characterArmors[character].total + 1;
+	for (const armor of armorData) {
+		const armorClass = characterClasses[armor.class];
 
-		const type = armorTypes[armor.armor_type];
-		if (characterArmors[character][type] === undefined) {
-			characterArmors[character][type] = 1;
-		} else characterArmors[character][type] = characterArmors[character][type] + 1;
+		// Count class total.
+		if (armorCounts[armorClass] === undefined) {
+			// Class total doesnt exist so create a new total.
+			armorCounts[armorClass] = {total: 1};
+		} else {
+			// Add 1 to total.
+			armorCounts[armorClass].total = armorCounts[armorClass].total + 1;
+		}
+
+		// Count armor type total grouped by class.
+		const armorType = armorTypes[armor.armor_type];
+		if (armorCounts[armorClass][armorType] === undefined) {
+			// Armor type total doesnt exist so create a new total.
+			armorCounts[armorClass][armorType] = 1;
+		} else {
+			// Add 1 to total.
+			armorCounts[armorClass][armorType] = armorCounts[armorClass][armorType] + 1;
+		}
 	}
 
-	return characterArmors;
+	return armorCounts;
 }
 
-function parseArmor(armorData, selectedClass, selectedArmorTypes, assumeMasterwork, minRange, maxRange, normalizeCount) {
-	const filteredArmor = filterArmor(armorData, selectedClass, selectedArmorTypes);
+/**
+ * Selects the armor matching the filters and converts their stats into values for the heatmap.
+ *
+ * This function is a helper that runs the filterArmor() func, passes the result to getArmorStats(),
+ * passes that result to normalizeArmorStats(), and then returns the result.
+ *
+ * @see {@link filterArmor}, {@link getArmorStats}, {@link normalizeArmorStats}
+ * @param {array} armorData The armor to filter from.
+ * @param {string} allowedClass The allowed armor class.
+ * @param {object} allowedArmorTypes The allowed types of armor.
+ * @param {boolean} assumeMasterwork Adds +2 to each armors stat if the armor is not already masterworked.
+ * @param {number} minRange Start of the range.
+ * @param {number} maxRange End of the range.
+ * @param {number} normalizeCount The amount to divide each points stat count by to get the range point percentage.
+ * @returns {number[]} The normalized stats.
+ */
+function parseArmor(armorData, allowedClass, allowedArmorTypes, assumeMasterwork, minRange, maxRange, normalizeCount) {
+	const filteredArmor = filterArmor(armorData, allowedClass, allowedArmorTypes);
 	const stats = getArmorStats(filteredArmor, assumeMasterwork);
 	return normalizeArmorStats(stats, minRange, maxRange, normalizeCount);
 }
 
-function filterArmor(armorData, selectedClass, allowedArmorTypes) {
+/**
+ * Searches through the armor and returns the pieces that match the allowed class and types.
+ *
+ * @param {array} armorData The armor to search through.
+ * @param {string} allowedClass The allowed armor class.
+ * @param {object} allowedArmorTypes The allowed types of armor.
+ *
+ * @returns The armor that matched the filters.
+ */
+function filterArmor(armorData, allowedClass, allowedArmorTypes) {
 	const filteredArmor = [];
-	for (const armor of armorData) {
-		const character = characterClasses[armor.class];
-		const type = armorTypes[armor.armor_type];
 
-		if (character != selectedClass) continue;
-		else if (allowedArmorTypes[type] === false) continue;
+	// Get armor that matches the filters.
+	for (const armor of armorData) {
+		const armorClass = characterClasses[armor.class];
+		const armorType = armorTypes[armor.armor_type];
+
+		// Skip armor piece if its the wrong class or type.
+		if (armorClass != allowedClass) continue;
+		else if (allowedArmorTypes[armorType] === false) continue;
 
 		filteredArmor.push(armor);
 	}
+
 	return filteredArmor;
 }
 
+/**
+ * Goes through each armor and adds their stats to separate arrays grouped by the stats type.
+ *
+ * The types are based on the position of the stat in the original array. The types are as follows:
+ *
+ * [
+ * - [Mobility stats],
+ * - [Resilience stats],
+ * - [Recovery stats],
+ * - [Discipline stats],
+ * - [Intellect stats],
+ * - [Strength stats]
+ *
+ * ]
+ *
+ * @param {array} armors The armors to get the stats of.
+ * @param {boolean} assumeMasterwork Adds +2 to each armors stat if the armor is not already masterworked.
+ *
+ * @returns {number[][]} Each armors stats, grouped by type.
+ */
 function getArmorStats(armors, assumeMasterwork) {
 	let stats = [[], [], [], [], [], []];
-	for (let armor of armors) {
+
+	for (const armor of armors) {
+		// Add each stat to the corresponding array.
 		for (let [i, stat] of armor.stats.entries()) {
-			if (assumeMasterwork && !armor.masterwork) {
-				stat += 2;
-			}
+			// Adds +2 to each armors stat if the armor is not already masterworked.
+			if (assumeMasterwork && !armor.masterwork) stat += 2;
 			stats[i].push(stat);
 		}
 	}
+
 	return stats;
 }
 
-// for each array it will count how many numbers in the stats array are higher than each point in the range
-// of values that the stat map will display and then normalizes that count to determine the color
-// of each point on the stat map / heatmap
+/**
+ * For each point in the range, get the percentage of stats higher than the current point
+ * for each array.
+ *
+ * Runs the normalizeStats() function for each array in the armorStats parameter.
+ *
+ * @see {@link normalizeStats} for more info.
+ * @param {number[][]} armorStats The stats that corresponding to each type of stats. (Mobility, Strength, etc.)
+ * @param {number} minRange Start of the range.
+ * @param {number} maxRange End of the range.
+ * @param {number} normalizeCount The amount to divide each points stat count by to get the range point percentage.
+ * @returns {number[][]} The normalized stats.
+ */
 function normalizeArmorStats(armorStats, minRange, maxRange, normalizeCount) {
 	let normalizedArmorStats = [];
 	for (let stats of armorStats) {
@@ -93,27 +175,63 @@ function normalizeArmorStats(armorStats, minRange, maxRange, normalizeCount) {
 	return normalizedArmorStats;
 }
 
-// counts how many numbers in the stats array are higher than each point in the range the stat map will display
-// and then normalizes that count to determine the color of each point on the stat map / heatmap
+/**
+ * For each point in the range, get the percentage of stats higher than the current point.
+ *
+ * Each point in the range is given a value from 1 - 0.00, with 1 being 100% and 0 being 0%.
+ * The percentage is calculated using the total stats above the current point in the range
+ * divided by the normalizeCount.
+ *
+ * This value is then used to get the color / intensity of each point on the stats heat map.
+ * So the first point on the heatmap having the most stats is the most intense part of the heat map.
+ *
+ * @param {number[]} stats The array of stats corresponding to one type of stats. (ex: Mobility)
+ * @param {number} minRange Start of the range.
+ * @param {number} maxRange End of the range.
+ * @param {number} normalizeCount The amount to divide each points stat count by to get the range point percentage.
+ *
+ * @returns {number[]} The normalized stats.
+ *
+ * @example
+ * const stats = [2,3,4,5,10,11,25,60];
+ * const normalizedStats = normalizeStats(stats, 2, 10, 8);
+ * console.log(normalizedStats); // [1, 0.88, 0.75, 0.63, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50]
+ */
 function normalizeStats(stats, minRange, maxRange, normalizeCount) {
-	// sort stats into ascending order
+	// Sort stats into ascending order.
 	stats.sort((a, b) => a - b);
 
-	let n = 0;
-	let normalizedValues = [];
+	const normalizedValues = [];
+	let arrPosition = 0;
+
+	//  Get the percentage for each point on the range.
 	for (let i = minRange; i <= maxRange + 1; i++) {
-		while (stats[n] < i && n < stats.length) {
-			n++;
+		// Goes through the stat array until the stats are equal or greater than the current range value.
+		//  v                 v               v
+		// [2, 2, 2]  ->  [2, 2, 2] -> [2, 2, 2]
+		while (stats[arrPosition] < i && arrPosition < stats.length) {
+			arrPosition++;
 		}
 
-		let count = stats.length - n;
-		let normalizedValue = Math.round((count / normalizeCount) * 100) / 100; //rounds to 2 decimal
+		//        v           (arr position)
+		// [2, 2, 2, 2, 2]    (stats array)
+		// Remaining length = 3 (5 - 2)
+		const remainingArrLength = stats.length - arrPosition;
+		// Normalize the stat to a value from 1 to 0.00.
+		const normalizedValue = Math.round((remainingArrLength / normalizeCount) * 100) / 100; // Rounds to 2 decimal points.
 		normalizedValues.push(normalizedValue);
 	}
 
 	return normalizedValues;
 }
 
+/**
+ * Renders a users Destiny2 armor data with a heatmap for each individual stat type. Includes multiple options for
+ * filtering and controlling how the data is presented.
+ *
+ * @param {number} minRange Sets the minimum range the heatmap will show for each stat type.
+ * @param {number} maxRange Sets the maximum range the heatmap will show for each stat type.
+ */
 function StatMap({minRange, maxRange}) {
 	const demo = useContext(DemoContext);
 	const [selectedClass, setSelectedClass] = useState("Hunter");
@@ -121,10 +239,16 @@ function StatMap({minRange, maxRange}) {
 	const {armorData, loading, error} = useArmor(demo);
 	const {checked: assumeMasterwork} = useCheckbox("assumeMasterwork");
 
+	/**
+	 * Updates the selected button for the class selection buttons.
+	 */
 	function handleClassSelect(buttonText) {
 		setSelectedClass(buttonText);
 	}
 
+	/**
+	 * Toggles the clicked armor type buttons selected state.
+	 */
 	function handleArmorTypesSelection(e) {
 		let name = e.currentTarget.name;
 		let value = selectedArmorTypes[name] ? false : true;
@@ -134,6 +258,7 @@ function StatMap({minRange, maxRange}) {
 		});
 	}
 
+	// Get the armor data needed for rendering the components.
 	const armorCount = countArmor(armorData);
 	const normalizedStats = parseArmor(
 		armorData,
@@ -145,6 +270,7 @@ function StatMap({minRange, maxRange}) {
 		armorCount[selectedClass].total
 	);
 
+	// Loading spinner handled outside component so just return blank.
 	if (loading) return <></>;
 	else if (error) return <p>Error occurred.</p>;
 
