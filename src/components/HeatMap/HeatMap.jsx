@@ -1,24 +1,36 @@
-import React, {useState} from "react";
 import PropTypes from "prop-types";
-import styles from "./HeatMap.module.css";
-import NoUiSlider from "../NoUiSlider";
-import StatBar from "../StatBar";
-import MobilityIcon from "../../assets/mobility.svg";
-import ResilienceIcon from "../../assets/resilience.svg";
-import RecoveryIcon from "../../assets/recovery.svg";
+import React, {useState} from "react";
 import DisciplineIcon from "../../assets/discipline.svg";
 import IntellectIcon from "../../assets/intellect.svg";
+import MobilityIcon from "../../assets/mobility.svg";
+import RecoveryIcon from "../../assets/recovery.svg";
+import ResilienceIcon from "../../assets/resilience.svg";
 import StrengthIcon from "../../assets/strength.svg";
 import useCheckbox from "../../customHooks/useCheckbox";
+import NoUiSlider from "../NoUiSlider";
+import StatBar from "../StatBar";
+import styles from "./HeatMap.module.css";
 
+/**
+ * Renders a heatmap bar for each stat type with a range slider to control the heatmaps range shown.
+ *
+ * @param {object} slider The min and max range for the nouislider. Handles are set at the ranges min / max.
+ * @param {number[][]} armor The heatmap values for each stat used to render the heatmap intensity / color.
+ */
 function HeatMap({slider, armor}) {
 	const [sliderValues, setSliderValues] = useState({min: slider.minRange, max: slider.maxRange});
 	const {checked: smoothing} = useCheckbox("smoothing");
 
+	/**
+	 * Update the sliders min / max handle values into state.
+	 *
+	 * @param {object} values The position / value of the sliders min / max handles.
+	 */
 	function handleSliderChange(values) {
 		setSliderValues({min: Number(values[0]), max: Number(values[1])});
 	}
 
+	// Iterate the armor data to create each stats heatmap bar.
 	const statBars = armor.map((values, index) => (
 		<StatBar
 			key={index}
