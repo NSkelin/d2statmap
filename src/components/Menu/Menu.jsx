@@ -1,7 +1,15 @@
-import React from "react";
 import PropTypes from "prop-types";
+import React from "react";
 import styles from "./Menu.module.css";
 
+/**
+ * Renders a title-able section of content that can contain other React elements.
+ *
+ * @param {string} title Title for this menu.
+ * @param {string} titleBG Background color for the components title.
+ * @param {string} bodyBG Background color for the components body.
+ * @param {*} children React child elements to display inside the component.
+ */
 function Menu({title, titleBG, bodyBG, children}) {
 	return (
 		<section className={styles.content} style={{backgroundColor: titleBG}}>

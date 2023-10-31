@@ -3,6 +3,9 @@ import React, {useState} from "react";
 import Button from "../Button";
 import styles from "./NotificationBar.module.css";
 
+/**
+ * Renders a close-able bar at the top of the screen to alert users the page they are on is for demo purposes only, and next steps to follow.
+ */
 function NotificationBar() {
 	const [showNotif, setShowNotif] = useState(true);
 
