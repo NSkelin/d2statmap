@@ -86,20 +86,35 @@ async function getD2ArmorDefinitions() {
  * As such it is a wasted call and a console warning will be sent.
  */
 async function UpdateArmorDefinitionsEachTuesday() {
-	const armorDefinitions = await getD2ArmorDefinitions();
-	setArmorDefinitions(armorDefinitions);
+	try {
+		const armorDefinitions = await getD2ArmorDefinitions();
+		setArmorDefinitions(armorDefinitions);
 
-	// Clear the old task and warn about calling the same schedule twice.
-	if (fetchTask) {
-		console.warn("WARN: fetchDataOnSchedule() is being called twice!");
-		fetchTask.stop();
+		// Clear the old task and warn about calling the same schedule twice.
+		if (fetchTask) {
+			console.warn("WARN: fetchDataOnSchedule() is being called twice!");
+			fetchTask.stop();
+		}
+
+		// Fetch at 18:00 each tuesday, because Bungies weekly Destiny2 update is every tuesday.
+		fetchTask = cron.schedule("0 18 * * Tuesday", UpdateArmorDefinitionsEachTuesday, {
+			scheduled: true,
+			timezone: "America/Los_Angeles",
+		});
+	} catch {
+		// Failed to get new armor definitions.
+		if (armorDefinitions.size() === 0) {
+			// There are no armor definitions at all (really bad!) so retry every 5 minutes until there are.
+			setTimeout(() => {
+				UpdateArmorDefinitionsEachTuesday();
+			}, 5 * 60 * 1000); // 5 minutes in milliseconds
+		} else {
+			// Failed to do the weekly update so the armor definitions exist but are stale. Retry every so often until it succeeds.
+			setTimeout(() => {
+				UpdateArmorDefinitionsEachTuesday();
+			}, 30 * 60 * 1000); // 30 minutes in milliseconds
+		}
 	}
-
-	// Fetch at 18:00 each tuesday, because Bungies weekly Destiny2 update is every tuesday.
-	fetchTask = cron.schedule("0 18 * * Tuesday", UpdateArmorDefinitionsEachTuesday, {
-		scheduled: true,
-		timezone: "America/Los_Angeles",
-	});
 }
 
 /**
