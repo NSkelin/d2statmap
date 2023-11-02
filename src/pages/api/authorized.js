@@ -52,7 +52,10 @@ async function authorized(req, res) {
 	deleteCookie("state", {req, res});
 
 	// Confirm the state is the same to prevent ensure a cross-site request forgery (csrf) did not happen.
-	if (req.query.state !== state) res.status(307).redirect("/authenticate?error=true");
+	if (req.query.state !== state) {
+		res.status(307).redirect("/authenticate?error=true");
+		return;
+	}
 
 	try {
 		// Create a session / auth cookie with the given auth tokens.
