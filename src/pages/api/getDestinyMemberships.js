@@ -63,20 +63,25 @@ async function getDestinyMemberships(req, res) {
 	const authCookie = getCookie("auth", {req, res});
 	const auth = jwt.verify(authCookie, process.env.SIGN_SECRET);
 
-	const {memberships, cookie: idsCookie} = await getMemberships(auth.accessToken);
+	try {
+		const {memberships, cookie: idsCookie} = await getMemberships(auth.accessToken);
 
-	// Save users platform ids for use in saveSelectedProfile API.
-	const signedToken = jwt.sign(idsCookie, process.env.SIGN_SECRET);
-	setCookie("membershipIds", signedToken, {
-		req,
-		res,
-		httpOnly: true,
-		maxAge: 3600, // 1 hour
-		sameSite: "strict",
-		secure: true,
-	});
+		// Save users platform ids for use in saveSelectedProfile API.
+		const signedToken = jwt.sign(idsCookie, process.env.SIGN_SECRET);
+		setCookie("membershipIds", signedToken, {
+			req,
+			res,
+			httpOnly: true,
+			maxAge: 3600, // 1 hour
+			sameSite: "strict",
+			secure: true,
+		});
 
-	res.status(200).json(memberships);
+		res.status(200).json(memberships);
+	} catch {
+		// Get Memberships fetch failed.
+		res.status(502).json({error: "API_UNAVAILABLE", message: "Failed to fetch player memberships."});
+	}
 }
 
 /**
