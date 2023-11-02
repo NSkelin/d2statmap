@@ -9,4 +9,9 @@
     justify-content: center;
     align-items: center;
     flex: 1;
+    flex-direction: column;
+    gap: 15px;
+}
+.error {
+    color: rgb(255, 175, 175)
 }
