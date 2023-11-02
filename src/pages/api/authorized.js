@@ -1,5 +1,6 @@
 import {deleteCookie, getCookie, setCookie} from "cookies-next";
 import jwt from "jsonwebtoken";
+import {attemptFetch} from "../../attemptFetch";
 
 /**
  * Requests an access token from bungie for the current user.
@@ -17,7 +18,7 @@ async function fetchAccessToken(code) {
 	formData.append("client_secret", process.env.CLIENT_SECRET);
 
 	// Fetch access token.
-	const response = await fetch("https://www.bungie.net/platform/app/oauth/token/", {
+	const data = await attemptFetch(3, "https://www.bungie.net/platform/app/oauth/token/", {
 		method: "POST",
 		headers: {
 			"X-API-KEY": process.env.CLIENT_API_KEY,
@@ -26,14 +27,7 @@ async function fetchAccessToken(code) {
 		body: formData.toString(),
 	});
 
-	if (response.ok) {
-		const data = await response.json();
-		return data;
-	} else {
-		// Log errors.
-		console.log(response.status);
-		console.log(response);
-	}
+	return data;
 }
 
 /**

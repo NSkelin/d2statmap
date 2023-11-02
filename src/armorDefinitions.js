@@ -1,4 +1,5 @@
 import cron from "node-cron";
+import {attemptFetch} from "./attemptFetch";
 
 let armorDefinitions = new Map();
 // the node-cron task that updates the data each week.
@@ -30,13 +31,12 @@ export const DestinyItemCategoryDefinitionsEnum = Object.freeze({
  * @returns The Destiny2 manifest response.
  */
 async function fetchManifest() {
-	const response = await fetch("https://www.bungie.net/Platform/Destiny2/Manifest/", {
+	const data = await attemptFetch(3, "https://www.bungie.net/Platform/Destiny2/Manifest/", {
 		method: "GET",
 		headers: {
 			"X-API-KEY": process.env.CLIENT_API_KEY,
 		},
 	});
-	const data = await response.json();
 	return data;
 }
 
@@ -48,13 +48,13 @@ async function fetchManifest() {
 async function getInvItemDefinitions() {
 	const manifest = await fetchManifest();
 	const invURL = "https://www.bungie.net" + manifest.Response.jsonWorldComponentContentPaths.en.DestinyInventoryItemDefinition;
-	const response = await fetch(invURL, {
+
+	const data = await attemptFetch(3, invURL, {
 		method: "GET",
 		headers: {
 			"X-API-KEY": process.env.CLIENT_API_KEY,
 		},
 	});
-	const data = await response.json();
 	return data;
 }
 

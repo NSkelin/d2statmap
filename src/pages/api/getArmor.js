@@ -1,6 +1,7 @@
 import {getCookie} from "cookies-next";
 import jwt from "jsonwebtoken";
 import {DestinyItemCategoryDefinitionsEnum, getArmorDefinitions, initializeData} from "../../armorDefinitions";
+import {attemptFetch} from "../../attemptFetch";
 import validateAndRefreshAccessToken from "../../validateAndRefreshAccessToken";
 
 // Prepare the Destiny2 armor definitions on startup for later use.
@@ -62,7 +63,7 @@ async function fetchPlayerProfile(membershipType, destinyMembershipId, accessTok
 
 	// Fetch inventories and item stats.
 	const url = `https://www.bungie.net/Platform/Destiny2/${membershipType}/Profile/${destinyMembershipId}/?components=${components.join(",")}`;
-	const response = await fetch(url, {
+	const data = await attemptFetch(3, url, {
 		method: "GET",
 		headers: {
 			"X-API-KEY": process.env.CLIENT_API_KEY,
@@ -70,14 +71,7 @@ async function fetchPlayerProfile(membershipType, destinyMembershipId, accessTok
 		},
 	});
 
-	if (response.ok) {
-		const data = await response.json();
-		return data;
-	} else {
-		// Log errors.
-		console.log(response.status);
-		console.log(response);
-	}
+	return data;
 }
 
 /**

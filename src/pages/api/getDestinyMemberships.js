@@ -1,5 +1,6 @@
 import {getCookie, setCookie} from "cookies-next";
 import jwt from "jsonwebtoken";
+import {attemptFetch} from "../../attemptFetch";
 import validateAndRefreshAccessToken from "../../validateAndRefreshAccessToken";
 
 /**
@@ -10,7 +11,7 @@ import validateAndRefreshAccessToken from "../../validateAndRefreshAccessToken";
  * @returns Returns the result of calling {@link https://www.bungie.net/Platform//User/GetMembershipsForCurrentUser/}
  */
 async function fetchUserMemberships(accessToken) {
-	const response = await fetch("https://www.bungie.net/Platform//User/GetMembershipsForCurrentUser/", {
+	const data = await attemptFetch(3, "https://www.bungie.net/Platform//User/GetMembershipsForCurrentUser/", {
 		method: "GET",
 		headers: {
 			"X-API-KEY": process.env.CLIENT_API_KEY,
@@ -18,14 +19,7 @@ async function fetchUserMemberships(accessToken) {
 		},
 	});
 
-	if (response.ok) {
-		const data = await response.json();
-		return data.Response;
-	} else {
-		// Log errors.
-		console.log(response.status);
-		console.log(response);
-	}
+	return data.Response;
 }
 
 /**
