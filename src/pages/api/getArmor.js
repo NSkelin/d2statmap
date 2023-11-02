@@ -214,10 +214,18 @@ async function getArmor(req, res) {
 	const membership = jwt.verify(membershipCookie, process.env.SIGN_SECRET);
 
 	const armorDefinitions = getArmorDefinitions();
-	const playerProfile = await fetchPlayerProfile(membership.type, membership.id, auth.accessToken);
-	const playerArmor = GetPlayerArmor(armorDefinitions, playerProfile);
+	// Armor definitions are empty
+	if (armorDefinitions.size === 0) return res.status(502).json({error: "API_UNAVAILABLE", message: "Failed to fetch manifest."});
 
-	return res.status(200).json(playerArmor);
+	try {
+		const playerProfile = await fetchPlayerProfile(membership.type, membership.id, auth.accessToken);
+		const playerArmor = GetPlayerArmor(armorDefinitions, playerProfile);
+
+		return res.status(200).json(playerArmor);
+	} catch {
+		// Failed to fetch player profile
+		return res.status(502).json({error: "API_UNAVAILABLE", message: "Failed to fetch player profile."});
+	}
 }
 
 /**
