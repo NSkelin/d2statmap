@@ -48,11 +48,11 @@ async function authorized(req, res) {
 	}
 	const state = jwt.verify(stateCookie, process.env.SIGN_SECRET);
 
-	// Confirm the state is the same to prevent ensure a cross-site request forgery (csrf) did not happen.
-	if (req.query.state !== state) res.status(403).send("Failed to authenticate.");
-
 	// Cleanup state as its no longer necessary.
 	deleteCookie("state", {req, res});
+
+	// Confirm the state is the same to prevent ensure a cross-site request forgery (csrf) did not happen.
+	if (req.query.state !== state) res.status(403).send("Failed to authenticate.");
 
 	// Create a session / auth cookie with the given auth tokens.
 	const accessToken = await fetchAccessToken(req.query.code);
