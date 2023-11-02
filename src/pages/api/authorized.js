@@ -43,7 +43,7 @@ async function authorized(req, res) {
 	// Get the state sent with the original auth request.
 	const stateCookie = getCookie("state", {req, res});
 	if (stateCookie === undefined) {
-		res.status(307).redirect("/authenticate");
+		res.status(307).redirect("/authenticate?error=true");
 		return;
 	}
 	const state = jwt.verify(stateCookie, process.env.SIGN_SECRET);
@@ -52,27 +52,32 @@ async function authorized(req, res) {
 	deleteCookie("state", {req, res});
 
 	// Confirm the state is the same to prevent ensure a cross-site request forgery (csrf) did not happen.
-	if (req.query.state !== state) res.status(403).send("Failed to authenticate.");
+	if (req.query.state !== state) res.status(307).redirect("/authenticate?error=true");
 
-	// Create a session / auth cookie with the given auth tokens.
-	const accessToken = await fetchAccessToken(req.query.code);
-	const token = {
-		accessToken: accessToken.access_token,
-		accessTokenExpiresAt: Math.floor(Date.now() / 1000) + accessToken.expires_in,
-		refreshToken: accessToken.refresh_token,
-		refreshTokenExpiresAt: Math.floor(Date.now() / 1000) + accessToken.refresh_expires_in,
-	};
-	const signedToken = jwt.sign(token, process.env.SIGN_SECRET);
-	setCookie("auth", signedToken, {
-		req,
-		res,
-		httpOnly: true,
-		maxAge: 7776000,
-		sameSite: "lax", // Must be lax so we can send the auth cookie when redirecting to account selection. (Origin is Bungie).
-		secure: true,
-	});
+	try {
+		// Create a session / auth cookie with the given auth tokens.
+		const accessToken = await fetchAccessToken(req.query.code);
+		const token = {
+			accessToken: accessToken.access_token,
+			accessTokenExpiresAt: Math.floor(Date.now() / 1000) + accessToken.expires_in,
+			refreshToken: accessToken.refresh_token,
+			refreshTokenExpiresAt: Math.floor(Date.now() / 1000) + accessToken.refresh_expires_in,
+		};
+		const signedToken = jwt.sign(token, process.env.SIGN_SECRET);
+		setCookie("auth", signedToken, {
+			req,
+			res,
+			httpOnly: true,
+			maxAge: 7776000,
+			sameSite: "lax", // Must be lax so we can send the auth cookie when redirecting to account selection. (Origin is Bungie).
+			secure: true,
+		});
 
-	res.status(307).redirect("/accountSelection");
+		res.status(307).redirect("/accountSelection");
+	} catch {
+		// Failed to get an access token.
+		res.status(307).redirect("/authenticate?error=true");
+	}
 }
 
 /**
