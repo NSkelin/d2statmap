@@ -3,10 +3,11 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "next lint"
+		"lint": "next lint",
+		"proxy": "node devFiles/startProxyHTTPSServer.js"
 	},
 	"name": "d2statmap",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"description": "A tool to visualize a destiny 2 players owned armor stats as a heatmap",
 	"main": "server.js",
 	"private": true,
@@ -33,11 +34,11 @@
 	"dependencies": {
 		"cookie-parser": "^1.4.6",
 		"cookies-next": "^2.1.1",
-		"dotenv": "^16.0.3",
 		"express": "^4.18.2",
 		"jsonwebtoken": "^9.0.0",
 		"nanoid": "^4.0.1",
 		"next": "^13.3.0",
+		"node-cron": "^3.0.2",
 		"nouislider": "^15.7.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",

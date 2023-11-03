@@ -1,21 +1,24 @@
+/**
+ * This page is the same as the main page but with the demo context set to true (defaults to false).
+ *
+ * The purpose of this page is to allow other users to view how the site works without needing
+ * a Bungie / Destiny2 account, mainly for my portfolio.
+ *
+ * All it does is load the app normally but with the demo context set to true.
+ */
 import React from "react";
+import NotificationBar from "../components/NotificationBar";
+import {DemoContext} from "../demoContext";
 import App from "./index";
-import styles from "../demo.module.css";
-import Link from "next/link";
 
+// Load the main app but with the demo context set to true.
 function Demo() {
 	return (
 		<>
-			<App demo={true} />
-			<div className={styles.wrapper}>
-				<span className={styles.warning}>
-					<span style={{color: "red"}}>Warning!</span> This is an example page. Click &nbsp;
-					<Link className={styles.link} href="/authenticate">
-						Here
-					</Link>
-					&nbsp; To go back the main site.
-				</span>
-			</div>
+			<DemoContext.Provider value={true}>
+				<NotificationBar />
+				<App />
+			</DemoContext.Provider>
 		</>
 	);
 }

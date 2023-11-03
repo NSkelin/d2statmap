@@ -1,7 +1,13 @@
-import React from "react";
 import PropTypes from "prop-types";
+import React from "react";
 import styles from "./IconCount.module.css";
 
+/**
+ * Renders an icon with a number beside it.
+ *
+ * @param {*} Icon
+ * @param {number} count
+ */
 function IconCount({Icon, count}) {
 	return (
 		<div className={styles.wrapper}>
