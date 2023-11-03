@@ -118,9 +118,14 @@ export default async function validateAndRefreshAccessToken(req, res, handler) {
 		res.status(401).json("unauthorized");
 	} else if (accessTokenExpired) {
 		// Refresh access token and update cookies.
-		await refreshAccessToken(req, res, auth.refreshToken);
-		await updateMembershipMaxAge(req, res);
-		await handler(req, res);
+		try {
+			await refreshAccessToken(req, res, auth.refreshToken);
+			await updateMembershipMaxAge(req, res);
+			await handler(req, res);
+		} catch {
+			// Failed to fetch a new access token.
+			return res.status(502).json({error: "API_UNAVAILABLE", message: "Failed to refresh access token."});
+		}
 	} else {
 		// Access token is valid.
 		await handler(req, res);
