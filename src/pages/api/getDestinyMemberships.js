@@ -76,7 +76,7 @@ async function getDestinyMemberships(req, res) {
 			sameSite: "strict",
 			secure: true,
 		});
-
+		res.setHeader("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
 		res.status(200).json(memberships);
 	} catch {
 		// Get Memberships fetch failed.
