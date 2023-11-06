@@ -1,10 +1,10 @@
 # d2statmap
 d2Statmap is a third party webapp for the videogame Destiny 2.
 
-[View it live](). (coming soon)
+[View it live](https://d2statmap.vercel.app).
 
 Dont have a bungie account?<br>
-[View the demo](https://d2statmap-kf4fa1h3x-nskelin.vercel.app/demo).
+[View the demo](https://d2statmap.vercel.app/demo).
 
 ![image](https://user-images.githubusercontent.com/31994545/235534017-f1c0b0af-fb71-4cb4-bf03-d50ed2e327a4.png)
 
